@@ -129,60 +129,74 @@ class manager {
         $lastseen = self::get_lastseen($userid, $courseid);
         $seencms = self::get_seen_cms($userid);
         
-        $sql = "SELECT cm.id as cmid, cm.module, cm.instance, cm.added,
-                       m.name as modname, cm.visible,
-                       cm.sectionnum,
-                       r.id as resourceid, r.name as resourcename,
-                       r.timemodified as resourcemodified
+        // First get all course modules with basic info
+        $sql = "SELECT cm.id as cmid, cm.module, cm.instance, cm.added, cm.section,
+                       m.name as modname, cm.visible
                 FROM {course_modules} cm
                 JOIN {modules} m ON m.id = cm.module
-                LEFT JOIN (
-                    SELECT id, name, course, timemodified, 1 as istopic FROM {forum} WHERE course = ?
-                    UNION ALL
-                    SELECT id, name, course, timemodified, 2 as istopic FROM {assign} WHERE course = ?
-                    UNION ALL
-                    SELECT id, name, course, timemodified, 3 as istopic FROM {quiz} WHERE course = ?
-                    UNION ALL
-                    SELECT id, name, course, timemodified, 4 as istopic FROM {resource} WHERE course = ?
-                    UNION ALL
-                    SELECT id, name, course, timemodified, 5 as istopic FROM {lesson} WHERE course = ?
-                    UNION ALL
-                    SELECT id, name, course, timemodified, 6 as istopic FROM {workshop} WHERE course = ?
-                    UNION ALL
-                    SELECT id, name, course, timemodified, 7 as istopic FROM {choice} WHERE course = ?
-                    UNION ALL
-                    SELECT id, name, course, timemodified, 8 as istopic FROM {page} WHERE course = ?
-                    UNION ALL
-                    SELECT id, name, course, timemodified, 9 as istopic FROM {url} WHERE course = ?
-                    UNION ALL
-                    SELECT id, name, course, timemodified, 10 as istopic FROM {h5pactivity} WHERE course = ?
-                ) r ON r.id = cm.instance AND r.istopic = m.id
                 WHERE cm.course = ? AND cm.visible = 1
-                ORDER BY cm.sectionnum, cm.added DESC";
+                ORDER BY cm.section, cm.added DESC";
 
-        $params = array_fill(0, 10, $courseid);
-        $params[] = $courseid;
+        $records = $DB->get_records_sql($sql, [$courseid]);
 
-        $records = $DB->get_records_sql($sql, $params);
+        // Now get names and timemodified for all instances
+        // Group by module type for efficient querying
+        $instancenames = [];
+        $instancemodified = [];
+        
+        // Get all module types that have name field
+        $moduletypes = $DB->get_records('modules', null, 'name');
+        
+        foreach ($moduletypes as $mod) {
+            $tablename = $mod->name;
+            // Check if table exists and has name field
+            if (!$DB->get_manager()->table_exists($tablename)) {
+                continue;
+            }
+            
+            // Try to get name and timemodified from module table
+            try {
+                $instances = $DB->get_records_sql("
+                    SELECT id, name, timemodified 
+                    FROM {" . $tablename . "} 
+                    WHERE course = ?
+                ", [$courseid]);
+                
+                foreach ($instances as $instance) {
+                    $instancenames[$mod->id][$instance->id] = $instance->name ?? 'Unnamed';
+                    $instancemodified[$mod->id][$instance->id] = $instance->timemodified ?? null;
+                }
+            } catch (\Exception $e) {
+                // Table doesn't have expected structure, skip
+                continue;
+            }
+        }
 
         $activities = [];
         $now = time();
 
         foreach ($records as $record) {
-            if ($record->resourcemodified === null) {
-                $acttime = $record->added;
+            $instancename = $instancenames[$record->module][$record->instance] ?? 'Unnamed';
+            $instancemod = $instancemodified[$record->module][$record->instance] ?? null;
+            
+            // Determine the activity time: use timemodified if available and newer
+            if ($instancemod !== null && $instancemod > $record->added) {
+                $acttime = $instancemod;
             } else {
-                $acttime = $record->resourcemodified;
+                $acttime = $record->added;
             }
 
+            // Skip if older than last visit
             if ($lastseen !== null && $acttime <= $lastseen) {
                 continue;
             }
 
+            // Skip if already seen
             if (isset($seencms[$record->cmid])) {
                 continue;
             }
 
+            // Skip if too old (more than 60 days)
             if ($lastseen !== null) {
                 $dayssince = floor(($now - $acttime) / 86400);
                 if ($dayssince > 60) {
@@ -192,20 +206,28 @@ class manager {
 
             $acttype = self::get_activity_type_label($record->modname);
             $icon = self::get_module_icon($record->modname);
+            
+            // Check if activity was modified after being added
+            $modifiedafteradd = ($instancemod !== null && $instancemod > $record->added);
 
             $activities[] = [
                 'cmid' => $record->cmid,
                 'type' => $acttype,
                 'typename' => $record->modname,
-                'name' => \format_string($record->resourcename ?? 'Unnamed'),
+                'name' => \format_string($instancename),
+                'timeadded' => $record->added,
+                'timeaddedstr' => self::format_time($record->added),
+                'timemodified' => $instancemod,
+                'timemodifiedstr' => ($instancemod !== null && $instancemod != $record->added) ? self::format_time($instancemod) : null,
                 'time' => $acttime,
                 'timestr' => self::format_time($acttime),
                 'typeicon' => $icon,
                 'url' => new \moodle_url('/mod/' . $record->modname . '/view.php', [
                     'id' => $record->cmid
                 ]),
-                'section' => $record->sectionnum,
+                'section' => $record->section,
                 'isnew' => ($lastseen === null || $acttime > $lastseen),
+                'wasmodified' => $modifiedafteradd,
             ];
         }
 

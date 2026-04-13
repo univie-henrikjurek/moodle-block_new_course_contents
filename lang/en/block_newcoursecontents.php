@@ -52,6 +52,8 @@ $string['justnow'] = 'Just now';
 
 $string['new'] = 'New';
 $string['updated'] = 'Updated';
+$string['modified'] = 'Modified';
+$string['added'] = 'Added';
 $string['open'] = 'Open';
 $string['gotocourse'] = 'Go to course';
 

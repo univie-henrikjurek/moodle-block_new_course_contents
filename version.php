@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_newcoursecontents';
-$plugin->version = 2026041309;
+$plugin->version = 2026041310;
 $plugin->release = '1.0.1';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->requires = 2024051300;

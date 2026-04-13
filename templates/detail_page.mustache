@@ -14,43 +14,56 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
-{{=<% %>=}}
-<%# JSDOC %>
-<template id="node_modules/@moodlehq/moodle-local_缺/mustache/block_newcoursecontents/detail_page">
-<%# JSDOC /%>
-{{=<% %>=}}
 <div class="block-newcoursecontents-detail">
-    <div class="course-header mb-4">
-        <h2>
-            <a href="{{{courseurl}}}">{{coursename}}</a>
+    <div class="course-header mb-4 pb-3 border-bottom">
+        <h2 class="mb-2">
+            <a href="{{{courseurl}}}" class="text-decoration-none">{{coursename}}</a>
         </h2>
-        <p class="text-muted">
+        <p class="text-muted mb-0">
+            <i class="fa-regular fa-eye me-1"></i>
             {{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}
         </p>
     </div>
 
     {{#activities}}
-    <div class="activity-item mb-3 p-3 border rounded">
-        <div class="d-flex align-items-center">
-            <div class="activity-icon mr-3">
+    <div class="activity-item mb-3 p-3 border rounded shadow-sm">
+        <div class="d-flex align-items-start">
+            <div class="activity-icon me-3 mt-1">
                 {{{typeicon}}}
             </div>
             <div class="flex-grow-1">
-                <h5 class="mb-1">
-                    <a href="{{{url}}}">{{name}}</a>
+                <h5 class="mb-2">
+                    <a href="{{{url}}}" class="text-decoration-none fw-semibold">{{name}}</a>
                 </h5>
-                <div class="activity-meta">
-                    <span class="badge badge-info mr-2">{{type}}</span>
-                    <span class="badge {{#isnew}}badge-success{{/isnew}}{{^isnew}}badge-secondary{{/isnew}} mr-2">
-                        {{#isnew}}{{#str}} new, block_newcoursecontents {{/str}}{{/isnew}}
-                        {{^isnew}}{{#str}} updated, block_newcoursecontents {{/str}}{{/isnew}}
+                <div class="activity-meta mb-2">
+                    <span class="badge bg-secondary me-2">{{type}}</span>
+                    {{#isnew}}
+                    <span class="badge bg-success me-2">
+                        <i class="fa-solid fa-star me-1"></i>{{#str}} new, block_newcoursecontents {{/str}}
                     </span>
-                    <small class="text-muted">{{timestr}}</small>
+                    {{/isnew}}
+                    {{#wasmodified}}
+                    <span class="badge bg-warning text-dark me-2">
+                        <i class="fa-solid fa-pencil me-1"></i>{{#str}} modified, block_newcoursecontents {{/str}}
+                    </span>
+                    {{/wasmodified}}
+                </div>
+                <div class="activity-dates small">
+                    <div class="text-muted">
+                        <i class="fa-regular fa-calendar-plus me-1"></i>
+                        {{#str}} added, block_newcoursecontents {{/str}}: {{timeaddedstr}}
+                    </div>
+                    {{#timemodifiedstr}}
+                    <div class="text-muted mt-1">
+                        <i class="fa-regular fa-calendar-check me-1"></i>
+                        {{#str}} modified, block_newcoursecontents {{/str}}: {{timemodifiedstr}}
+                    </div>
+                    {{/timemodifiedstr}}
                 </div>
             </div>
-            <div class="activity-actions">
+            <div class="activity-actions ms-3">
                 <a href="{{{url}}}" class="btn btn-sm btn-primary">
-                    {{#str}} open, block_newcoursecontents {{/str}}
+                    <i class="fa-solid fa-arrow-right me-1"></i>{{#str}} open, block_newcoursecontents {{/str}}
                 </a>
             </div>
         </div>
@@ -59,13 +72,14 @@
 
     {{^activities}}
     <div class="alert alert-success">
+        <i class="fa-regular fa-check-circle me-2"></i>
         {{#str}} nochanges, block_newcoursecontents {{/str}}
     </div>
     {{/activities}}
 
     <div class="mt-4 text-center">
         <a href="{{{courseurl}}}" class="btn btn-outline-secondary">
-            {{#str}} gotocourse, block_newcoursecontents {{/str}}
+            <i class="fa-solid fa-arrow-left me-2"></i>{{#str}} gotocourse, block_newcoursecontents {{/str}}
         </a>
     </div>
 </div>
