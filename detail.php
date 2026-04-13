@@ -25,7 +25,6 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-require_once(__DIR__ . '/lib.php');
 
 $courseid = required_param('courseid', PARAM_INT);
 
@@ -35,16 +34,14 @@ $context = context_course::instance($courseid);
 require_login($course, false);
 
 $PAGE->set_context($context);
-$PAGE->set_url(new moodle_url('/blocks/newcoursecontents/detail.php', ['courseid' => $courseid]));
-$PAGE->set_title(format_string($course->fullname));
-$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_url(new \moodle_url('/blocks/newcoursecontents/detail.php', ['courseid' => $courseid]));
+$PAGE->set_title(\format_string($course->fullname));
+$PAGE->set_heading(\format_string($course->fullname));
 
 require_once(__DIR__ . '/classes/manager.php');
 require_once(__DIR__ . '/classes/output/renderer.php');
 
 $activities = \block_newcoursecontents\manager::get_course_details($courseid, $USER->id);
-
-\block_newcoursecontents\manager::update_lastseen($USER->id, $courseid);
 
 foreach ($activities as &$activity) {
     $activity['url'] = $activity['url']->out(false);
@@ -53,9 +50,9 @@ foreach ($activities as &$activity) {
 $lastseen = \block_newcoursecontents\manager::get_lastseen($USER->id, $courseid);
 
 $templatecontext = [
-    'coursename' => format_string($course->fullname),
-    'courseurl' => new moodle_url('/course/view.php', ['id' => $courseid])->out(false),
-    'lastvisitstr' => $lastseen ? \block_newcoursecontents\manager::format_time($lastseen) : get_string('never', 'moodle'),
+    'coursename' => \format_string($course->fullname),
+    'courseurl' => new \moodle_url('/course/view.php', ['id' => $courseid])->out(false),
+    'lastvisitstr' => $lastseen ? \block_newcoursecontents\manager::format_time($lastseen) : \get_string('never', 'moodle'),
     'activities' => $activities,
 ];
 

@@ -41,33 +41,38 @@ class block_newcoursecontents extends block_base {
         $this->content->footer = '';
         $this->content->text = '';
 
-        $courses = \block_newcoursecontents\manager::get_courses_with_activities($USER->id);
+        try {
+            $courses = \block_newcoursecontents\manager::get_courses_with_activities($USER->id);
 
-        foreach ($courses as &$course) {
-            $course['courseurl'] = $course['courseurl']->out(false);
-            $course['detailurl'] = $course['detailurl']->out(false);
-            
-            if ($course['lastactivity']) {
-                $course['lasttimestr'] = \block_newcoursecontents\manager::format_time($course['lastactivity']);
-            } else {
-                $course['lasttimestr'] = '-';
+            foreach ($courses as &$course) {
+                $course['courseurl'] = $course['courseurl']->out(false);
+                $course['detailurl'] = $course['detailurl']->out(false);
+                
+                if ($course['lastactivity']) {
+                    $course['lasttimestr'] = \block_newcoursecontents\manager::format_time($course['lastactivity']);
+                } else {
+                    $course['lasttimestr'] = '-';
+                }
+                
+                if ($course['lastseen']) {
+                    $course['lastvisitstr'] = \block_newcoursecontents\manager::format_time($course['lastseen']);
+                } else {
+                    $course['lastvisitstr'] = null;
+                }
+                
+                $course['hasnewactivity'] = ($course['activitycount'] > 0);
             }
-            
-            if ($course['lastseen']) {
-                $course['lastvisitstr'] = \block_newcoursecontents\manager::format_time($course['lastseen']);
-            } else {
-                $course['lastvisitstr'] = null;
-            }
-            
-            $course['hasnewactivity'] = ($course['activitycount'] > 0);
+
+            $templatecontext = [
+                'courses' => $courses,
+            ];
+
+            $renderer = $PAGE->get_renderer('block_newcoursecontents');
+            $this->content->text = $renderer->render_block($templatecontext);
+        } catch (Exception $e) {
+            $this->content->text = '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
+            error_log('block_newcoursecontents error: ' . $e->getMessage());
         }
-
-        $templatecontext = [
-            'courses' => $courses,
-        ];
-
-        $renderer = $PAGE->get_renderer('block_newcoursecontents');
-        $this->content->text = $renderer->render_block($templatecontext);
 
         return $this->content;
     }
