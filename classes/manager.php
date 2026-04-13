@@ -64,21 +64,22 @@ class manager {
      * @return array Array of course data with activity counts
      */
     public static function get_courses_with_activities($userid) {
-        $cachekey = self::CACHE_PREFIX . 'courses_' . $userid;
+        global $DB;
         
         $cache = self::get_cache();
-        $cached = $cache->get($cachekey);
+        $cachekey = self::CACHE_PREFIX . 'courses_' . $userid;
         
+        $cached = $cache->get($cachekey);
         if ($cached !== false) {
             return $cached;
         }
-
-        $lastseens = self::get_lastseens_by_user($userid);
+        
+        $moodlelastaccess = $DB->get_records('user_lastaccess', ['userid' => $userid], '', 'courseid, timeaccess');
+        $lastseens = array_column($moodlelastaccess, 'timeaccess', 'courseid');
         
         $courses = \enrol_get_my_courses(['id', 'fullname', 'shortname', 'summary', 'timecreated', 'visible', 'idnumber', 'category'], null, 0, false);
         
         if (empty($courses)) {
-            // Fallback: versuche get_user_courses
             $courses = \get_user_courses($userid);
         }
         
@@ -86,9 +87,6 @@ class manager {
             return [];
         }
 
-        $courseids = array_keys($courses);
-        $courseplaceholders = implode(',', array_fill(0, count($courseids), '?'));
-        
         $result = [];
         
         foreach ($courses as $course) {
