@@ -66,16 +66,11 @@ class manager {
     public static function get_courses_with_activities($userid) {
         global $DB;
         
-        $cache = self::get_cache();
-        $cachekey = self::CACHE_PREFIX . 'courses_' . $userid;
-        
-        $cached = $cache->get($cachekey);
-        if ($cached !== false) {
-            return $cached;
-        }
-        
         $moodlelastaccess = $DB->get_records('user_lastaccess', ['userid' => $userid], '', 'courseid, timeaccess');
-        $lastseens = array_column($moodlelastaccess, 'timeaccess', 'courseid');
+        $lastseens = [];
+        foreach ($moodlelastaccess as $record) {
+            $lastseens[$record->courseid] = $record->timeaccess;
+        }
         
         $courses = \enrol_get_my_courses(['id', 'fullname', 'shortname', 'summary', 'timecreated', 'visible', 'idnumber', 'category'], null, 0, false);
         
@@ -115,8 +110,6 @@ class manager {
         usort($result, function($a, $b) {
             return $b['activitycount'] - $a['activitycount'];
         });
-
-        $cache->set($cachekey, $result);
 
         return $result;
     }
