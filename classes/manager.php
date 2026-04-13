@@ -87,8 +87,8 @@ class manager {
         foreach ($courses as $course) {
             $lastseen = $lastseens[$course->id] ?? null;
             
-            $activitycount = self::count_course_activities($course->id, $lastseen);
-            $lastactivity = self::get_last_activity_time($course->id, $lastseen);
+            $activitycount = self::count_unseen_activities($course->id, $userid);
+            $lastactivity = self::get_last_activity_time($course->id);
             
             $result[] = [
                 'id' => $course->id,
@@ -116,6 +116,8 @@ class manager {
 
     /**
      * Get activity details for a specific course.
+     * Returns only activities that have been added since last course access
+     * and are not yet marked as seen by the user.
      *
      * @param int $courseid Course ID
      * @param int $userid User ID
@@ -125,8 +127,9 @@ class manager {
         global $DB;
 
         $lastseen = self::get_lastseen($userid, $courseid);
+        $seencms = self::get_seen_cms($userid);
         
-        $sql = "SELECT cm.id as cmid, cm.module, cm.instance, cm.added, cm.modified,
+        $sql = "SELECT cm.id as cmid, cm.module, cm.instance, cm.added,
                        m.name as modname, cm.visible,
                        cm.sectionnum,
                        r.id as resourceid, r.name as resourcename,
@@ -155,7 +158,7 @@ class manager {
                     SELECT id, name, course, timemodified, 10 as istopic FROM {h5pactivity} WHERE course = ?
                 ) r ON r.id = cm.instance AND r.istopic = m.id
                 WHERE cm.course = ? AND cm.visible = 1
-                ORDER BY cm.sectionnum, cm.added";
+                ORDER BY cm.sectionnum, cm.added DESC";
 
         $params = array_fill(0, 10, $courseid);
         $params[] = $courseid;
@@ -173,6 +176,10 @@ class manager {
             }
 
             if ($lastseen !== null && $acttime <= $lastseen) {
+                continue;
+            }
+
+            if (isset($seencms[$record->cmid])) {
                 continue;
             }
 
@@ -281,53 +288,139 @@ class manager {
     }
 
     /**
-     * Count new/changed activities in a course since last seen.
+     * Count activities in a course that are newer than user's last access
+     * and not yet marked as seen.
      *
      * @param int $courseid Course ID
-     * @param int|null $lastseen Last seen timestamp
-     * @return int Count of activities
+     * @param int $userid User ID
+     * @return int Count of unseen activities
      */
-    protected static function count_course_activities($courseid, $lastseen) {
+    protected static function count_unseen_activities($courseid, $userid) {
         global $DB;
 
+        $lastseen = self::get_lastseen($userid, $courseid);
+        $seencms = self::get_seen_cms($userid);
+
+        $params = [$courseid];
+        
         if ($lastseen === null) {
             $sql = "SELECT COUNT(cm.id)
                     FROM {course_modules} cm
                     WHERE cm.course = ? AND cm.visible = 1";
-            $params = [$courseid];
         } else {
             $sql = "SELECT COUNT(cm.id)
                     FROM {course_modules} cm
                     WHERE cm.course = ? AND cm.visible = 1
-                    AND (cm.added > ? OR cm.modified > ?)";
-            $params = [$courseid, $lastseen, $lastseen];
+                    AND cm.added > ?";
+            $params[] = $lastseen;
+        }
+
+        if (!empty($seencms)) {
+            $notincmids = array_keys($seencms);
+            list($insql, $inparams) = $DB->get_in_or_equal($notincmids, \SQL_PARAMS_QM, 'param', false);
+            $sql .= " AND cm.id " . $insql;
+            $params = array_merge($params, $inparams);
         }
 
         return $DB->count_records_sql($sql, $params);
     }
 
     /**
+     * Get all seen course modules for a user.
+     *
+     * @param int $userid User ID
+     * @return array Array of cmid => timeseen
+     */
+    protected static function get_seen_cms($userid) {
+        global $DB;
+
+        $records = $DB->get_records('block_newcoursecontents_seen', ['userid' => $userid], '', 'cmid, timeseen');
+        
+        $result = [];
+        foreach ($records as $record) {
+            $result[$record->cmid] = $record->timeseen;
+        }
+        
+        return $result;
+    }
+
+    /**
+     * Mark a specific activity as seen by a user.
+     *
+     * @param int $userid User ID
+     * @param int $cmid Course module ID
+     * @return bool Success
+     */
+    public static function mark_activity_seen($userid, $cmid) {
+        global $DB;
+
+        $now = time();
+        
+        $existing = $DB->get_record('block_newcoursecontents_seen', [
+            'userid' => $userid,
+            'cmid' => $cmid
+        ]);
+
+        if ($existing) {
+            return true;
+        }
+
+        $DB->insert_record('block_newcoursecontents_seen', [
+            'userid' => $userid,
+            'cmid' => $cmid,
+            'timeseen' => $now
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Mark multiple activities as seen by a user.
+     *
+     * @param int $userid User ID
+     * @param array $cmids Array of course module IDs
+     * @return bool Success
+     */
+    public static function mark_activities_seen($userid, $cmids) {
+        global $DB;
+
+        if (empty($cmids)) {
+            return true;
+        }
+
+        $now = time();
+        $existing = $DB->get_records('block_newcoursecontents_seen', [
+            'userid' => $userid
+        ], '', 'cmid');
+
+        $existingcmids = array_column($existing, 'cmid');
+
+        foreach ($cmids as $cmid) {
+            if (!in_array($cmid, $existingcmids)) {
+                $DB->insert_record('block_newcoursecontents_seen', [
+                    'userid' => $userid,
+                    'cmid' => $cmid,
+                    'timeseen' => $now
+                ]);
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Get the last activity time in a course.
      *
      * @param int $courseid Course ID
-     * @param int|null $lastseen Last seen timestamp
      * @return int|null Unix timestamp
      */
-    protected static function get_last_activity_time($courseid, $lastseen) {
+    protected static function get_last_activity_time($courseid) {
         global $DB;
 
-        if ($lastseen === null) {
-            $sql = "SELECT MAX(cm.added) as maxtime
-                    FROM {course_modules} cm
-                    WHERE cm.course = ? AND cm.visible = 1";
-            $params = [$courseid];
-        } else {
-            $sql = "SELECT MAX(MAX(cm.added, cm.modified)) as maxtime
-                    FROM {course_modules} cm
-                    WHERE cm.course = ? AND cm.visible = 1
-                    AND (cm.added > ? OR cm.modified > ?)";
-            $params = [$courseid, $lastseen, $lastseen];
-        }
+        $sql = "SELECT MAX(cm.added) as maxtime
+                FROM {course_modules} cm
+                WHERE cm.course = ? AND cm.visible = 1";
+        $params = [$courseid];
 
         $result = $DB->get_record_sql($sql, $params);
 

@@ -70,7 +70,7 @@ class block_newcoursecontents extends block_base {
             $renderer = $PAGE->get_renderer('block_newcoursecontents');
             $this->content->text = $renderer->render_block($templatecontext);
         } catch (Exception $e) {
-            $this->content->text = '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
+            $this->content->text = '<div class="alert alert-danger">Error loading course activities.</div>';
             error_log('block_newcoursecontents error: ' . $e->getMessage());
         }
 

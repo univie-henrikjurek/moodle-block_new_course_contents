@@ -43,6 +43,11 @@ require_once(__DIR__ . '/classes/output/renderer.php');
 
 $activities = \block_newcoursecontents\manager::get_course_details($courseid, $USER->id);
 
+$cmids = array_column($activities, 'cmid');
+if (!empty($cmids)) {
+    \block_newcoursecontents\manager::mark_activities_seen($USER->id, $cmids);
+}
+
 foreach ($activities as &$activity) {
     $activity['url'] = $activity['url']->out(false);
 }

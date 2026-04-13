@@ -54,5 +54,23 @@ function xmldb_block_newcoursecontents_upgrade($oldversion) {
         upgrade_block_savepoint(true, 2026041301, 'newcoursecontents');
     }
 
+    if ($oldversion < 2026041308) {
+        $table = new xmldb_table('block_newcoursecontents_seen');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
+        $table->add_field('cmid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
+        $table->add_field('timeseen', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('userid_cmid', XMLDB_KEY_UNIQUE, ['userid', 'cmid']);
+
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_block_savepoint(true, 2026041308, 'newcoursecontents');
+    }
+
     return true;
 }
