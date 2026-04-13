@@ -205,7 +205,7 @@ class manager {
             }
 
             $acttype = self::get_activity_type_label($record->modname);
-            $icon = self::get_module_icon($record->modname);
+            $iconname = self::get_module_icon_name($record->modname);
             
             // Check if activity was modified after being added
             $modifiedafteradd = ($instancemod !== null && $instancemod > $record->added);
@@ -214,6 +214,7 @@ class manager {
                 'cmid' => $record->cmid,
                 'type' => $acttype,
                 'typename' => $record->modname,
+                'iconname' => $iconname,
                 'name' => \format_string($instancename),
                 'timeadded' => $record->added,
                 'timeaddedstr' => self::format_time($record->added),
@@ -221,7 +222,6 @@ class manager {
                 'timemodifiedstr' => ($instancemod !== null && $instancemod != $record->added) ? self::format_time($instancemod) : null,
                 'time' => $acttime,
                 'timestr' => self::format_time($acttime),
-                'typeicon' => $icon,
                 'url' => new \moodle_url('/mod/' . $record->modname . '/view.php', [
                     'id' => $record->cmid
                 ]),
@@ -485,27 +485,13 @@ class manager {
     }
 
     /**
-     * Get module icon HTML.
+     * Get module icon name for use with Moodle's pix helper.
      *
-     * @param string $modname Module name
-     * @return string HTML img tag
+     * @param string $modname Module name (e.g., 'forum', 'assign')
+     * @return string Icon name for pix helper (e.g., 'i/forum')
      */
-    protected static function get_module_icon($modname) {
-        $iconurl = \moodle_url::make_pluginfile_url(
-            \context_system::instance()->id,
-            'mod_' . $modname,
-            'icon',
-            null,
-            null,
-            null
-        );
-
-        return \html_writer::empty_tag('img', [
-            'src' => $iconurl,
-            'class' => 'icon activityicon',
-            'alt' => '',
-            'title' => $modname
-        ]);
+    public static function get_module_icon_name($modname) {
+        return 'i/' . $modname;
     }
 
     /**

@@ -29,7 +29,8 @@
     <div class="activity-item mb-3 p-3 border rounded shadow-sm">
         <div class="d-flex align-items-start">
             <div class="activity-icon me-3 mt-1">
-                {{{typeicon}}}
+                {{#pix}}{{iconname}}, core, {{typename}}{{/pix}}
+                <span class="activity-icon-fallback d-none">{{typename}}</span>
             </div>
             <div class="flex-grow-1">
                 <h5 class="mb-2">

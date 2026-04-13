@@ -75,11 +75,6 @@
     background-color: #f8f9fa;
 }
 
-.block-newcoursecontents-detail .activity-icon img {
-    width: 24px;
-    height: 24px;
-}
-
 .block-newcoursecontents-detail .activity-meta .badge {
     font-weight: normal;
 }
@@ -87,6 +82,48 @@
 .block-newcoursecontents-detail .course-header {
     padding-bottom: 1rem;
     border-bottom: 2px solid #dee2e6;
+}
+
+/* Activity icon styling - 32px as requested */
+.activity-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.activity-icon img,
+.activity-icon .icon {
+    width: 32px !important;
+    height: 32px !important;
+    max-width: 32px;
+    max-height: 32px;
+}
+
+/* Fallback text if icon not found */
+.activity-icon-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: #6c757d;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+/* Hide fallback by default, show if image fails to load */
+.activity-icon img.icon {
+    display: block;
+}
+
+.activity-icon-fallback {
+    display: none;
 }
 
 /* Responsive adjustments */
