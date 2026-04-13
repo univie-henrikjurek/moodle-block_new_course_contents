@@ -1,0 +1,102 @@
+@plugin "block_newcoursecontents";
+
+.block_newcoursecontents {
+    font-size: 0.9rem;
+}
+
+.block_newcoursecontents .course-card {
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    border: 1px solid #e9ecef;
+}
+
+.block_newcoursecontents .course-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.block_newcoursecontents .course-name {
+    line-height: 1.3;
+}
+
+.block_newcoursecontents .course-name a:hover {
+    color: #0d6efd !important;
+}
+
+.block_newcoursecontents .course-meta {
+    line-height: 1.4;
+}
+
+.block_newcoursecontents .meta-item {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.block_newcoursecontents .meta-item i {
+    width: 16px;
+    text-align: center;
+}
+
+.block_newcoursecontents .activity-badge {
+    min-width: 2.5rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.block_newcoursecontents .activity-badge .badge-link {
+    color: inherit;
+}
+
+.block_newcoursecontents .activity-badge .badge-link:hover {
+    text-decoration: none;
+    opacity: 0.9;
+}
+
+.block_newcoursecontents .badge-orange {
+    background-color: #fd7e14;
+}
+
+.block_newcoursecontents .badge-secondary {
+    background-color: #6c757d;
+}
+
+.block_newcoursecontents .block-footer {
+    font-size: 0.75rem;
+    padding-top: 0.5rem;
+}
+
+.block-newcoursecontents-detail .activity-item {
+    transition: background-color 0.2s ease;
+}
+
+.block-newcoursecontents-detail .activity-item:hover {
+    background-color: #f8f9fa;
+}
+
+.block-newcoursecontents-detail .activity-icon img {
+    width: 24px;
+    height: 24px;
+}
+
+.block-newcoursecontents-detail .activity-meta .badge {
+    font-weight: normal;
+}
+
+.block-newcoursecontents-detail .course-header {
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .block_newcoursecontents .activity-badge {
+        min-width: 2rem;
+        font-size: 0.9rem;
+    }
+    
+    .block_newcoursecontents .course-meta {
+        font-size: 0.8rem;
+    }
+}

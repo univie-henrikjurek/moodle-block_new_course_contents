@@ -1,0 +1,82 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+<div class="block_newcoursecontents" data-region="newcoursecontents">
+    {{#courses}}
+    <div class="course-card card mb-2 shadow-sm">
+        <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="course-info flex-grow-1">
+                    <h6 class="mb-2 course-name">
+                        <a href="{{{courseurl}}}" class="text-body text-decoration-none fw-semibold">
+                            {{fullname}}
+                        </a>
+                    </h6>
+                    
+                    <div class="course-meta small">
+                        {{#lastvisitstr}}
+                        <div class="meta-item mb-1">
+                            <i class="fa-regular fa-eye text-muted me-1" aria-hidden="true"></i>
+                            <span class="text-muted">{{#str}} lastvisit, block_newcoursecontents {{/str}}:</span>
+                            <span class="text-secondary">{{lastvisitstr}}</span>
+                        </div>
+                        {{/lastvisitstr}}
+                        {{^lastvisitstr}}
+                        <div class="meta-item mb-1">
+                            <i class="fa-regular fa-eye-slash text-muted me-1" aria-hidden="true"></i>
+                            <span class="text-muted">{{#str}} nevervisited, block_newcoursecontents {{/str}}</span>
+                        </div>
+                        {{/lastvisitstr}}
+                        
+                        <div class="meta-item">
+                            <i class="fa-regular fa-clock text-muted me-1" aria-hidden="true"></i>
+                            <span class="text-muted">{{#str}} lastactivity, block_newcoursecontents {{/str}}:</span>
+                            <span class="{{#hasnewactivity}}text-success fw-medium{{/hasnewactivity}}{{^hasnewactivity}}text-secondary{{/hasnewactivity}}">
+                                {{lasttimestr}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-badge ms-3">
+                    <span class="badge {{badgeclass}} activity-badge rounded-pill px-3 py-2" 
+                          title="{{#str}} clickfordetails, block_newcoursecontents {{/str}}">
+                        <a href="{{{detailurl}}}" class="text-white text-decoration-none badge-link fs-6">
+                            {{activitycount}}
+                        </a>
+                    </span>
+                </div>
+            </div>
+            
+            {{#hasnewactivity}}
+            <div class="mt-3">
+                <a href="{{{detailurl}}}" class="btn btn-sm btn-primary w-100">
+                    <i class="fa-regular fa-list-check me-1"></i>
+                    {{#str}} viewdetails, block_newcoursecontents {{/str}}
+                </a>
+            </div>
+            {{/hasnewactivity}}
+        </div>
+    </div>
+    {{/courses}}
+
+    {{^courses}}
+    <div class="alert alert-info mb-0">
+        <i class="fa-regular fa-inbox me-2"></i>
+        {{#str}} nocourses, block_newcoursecontents {{/str}}
+    </div>
+    {{/courses}}
+</div>

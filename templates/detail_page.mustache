@@ -1,0 +1,71 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{=<% %>=}}
+<%# JSDOC %>
+<template id="node_modules/@moodlehq/moodle-local_缺/mustache/block_newcoursecontents/detail_page">
+<%# JSDOC /%>
+{{=<% %>=}}
+<div class="block-newcoursecontents-detail">
+    <div class="course-header mb-4">
+        <h2>
+            <a href="{{{courseurl}}}">{{coursename}}</a>
+        </h2>
+        <p class="text-muted">
+            {{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}
+        </p>
+    </div>
+
+    {{#activities}}
+    <div class="activity-item mb-3 p-3 border rounded">
+        <div class="d-flex align-items-center">
+            <div class="activity-icon mr-3">
+                {{{typeicon}}}
+            </div>
+            <div class="flex-grow-1">
+                <h5 class="mb-1">
+                    <a href="{{{url}}}">{{name}}</a>
+                </h5>
+                <div class="activity-meta">
+                    <span class="badge badge-info mr-2">{{type}}</span>
+                    <span class="badge {{#isnew}}badge-success{{/isnew}}{{^isnew}}badge-secondary{{/isnew}} mr-2">
+                        {{#isnew}}{{#str}} new, block_newcoursecontents {{/str}}{{/isnew}}
+                        {{^isnew}}{{#str}} updated, block_newcoursecontents {{/str}}{{/isnew}}
+                    </span>
+                    <small class="text-muted">{{timestr}}</small>
+                </div>
+            </div>
+            <div class="activity-actions">
+                <a href="{{{url}}}" class="btn btn-sm btn-primary">
+                    {{#str}} open, block_newcoursecontents {{/str}}
+                </a>
+            </div>
+        </div>
+    </div>
+    {{/activities}}
+
+    {{^activities}}
+    <div class="alert alert-success">
+        {{#str}} nochanges, block_newcoursecontents {{/str}}
+    </div>
+    {{/activities}}
+
+    <div class="mt-4 text-center">
+        <a href="{{{courseurl}}}" class="btn btn-outline-secondary">
+            {{#str}} gotocourse, block_newcoursecontents {{/str}}
+        </a>
+    </div>
+</div>

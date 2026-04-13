@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB VERSION="2007012400" COMMENT="XMLDB file for block_newcoursecontents"
+    xmlns="http://www.moodle.org/XMLDB/xmldb.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.moodle.org/XMLDB/xmldb.1.0 http://www.moodle.org/XMLDB/xmldb.1.0/xmldb.xsd">
+    
+    <STATEMENTS>
+        <TABLE NAME="block_newcoursecontents_lastseen" COMMENT="Stores last seen timestamp per user per course">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" SEQUENCE="true" COMMENT="Unique identifier"/>
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" SEQUENCE="false" COMMENT="User ID"/>
+                <FIELD NAME="courseid" TYPE="int" LENGTH="10" SEQUENCE="false" COMMENT="Course ID"/>
+                <FIELD NAME="lastseen" TYPE="int" LENGTH="10" SEQUENCE="false" COMMENT="Unix timestamp of last visit"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" SEQUENCE="false" COMMENT="Unix timestamp when record was created"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="userid_courseid" TYPE="unique" FIELDS="userid,courseid"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="idx_user_course" FIELDS="userid,courseid" UNIQUE="false"/>
+            </INDEXES>
+        </TABLE>
+    </STATEMENTS>
+    
+</XMLDB>
