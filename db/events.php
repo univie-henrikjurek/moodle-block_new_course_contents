@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Event handlers for block_newcoursecontents.
  *
  * @package   block_newcoursecontents
  * @copyright 2026 Your Name <your@email.com>
@@ -24,11 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_newcoursecontents';
-$plugin->version = 2026041309;
-$plugin->release = '1.0.1';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->requires = 2024051300;
-$plugin->supported = [405, 500];
-$plugin->dependencies = [];
-$plugin->cron = 3600;
+$handlers = [
+    'course_module_viewed' => [
+        'handlerfile' => '/blocks/newcoursecontents/classes/observer.php',
+        'handlerfunction' => ['block_newcoursecontents\\observer', 'course_module_viewed'],
+        'internal' => false,
+    ],
+];

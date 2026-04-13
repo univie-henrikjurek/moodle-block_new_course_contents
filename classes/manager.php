@@ -250,6 +250,7 @@ class manager {
 
     /**
      * Get the last seen timestamp for a user in a course.
+     * Uses Moodle's user_lastaccess table.
      *
      * @param int $userid User ID
      * @param int $courseid Course ID
@@ -258,12 +259,12 @@ class manager {
     public static function get_lastseen($userid, $courseid) {
         global $DB;
 
-        $record = $DB->get_record('block_newcoursecontents_lastseen', [
+        $record = $DB->get_record('user_lastaccess', [
             'userid' => $userid,
             'courseid' => $courseid
-        ]);
+        ], 'timeaccess');
 
-        return $record ? $record->lastseen : null;
+        return $record ? $record->timeaccess : null;
     }
 
     /**
@@ -298,7 +299,12 @@ class manager {
     protected static function count_unseen_activities($courseid, $userid) {
         global $DB;
 
-        $lastseen = self::get_lastseen($userid, $courseid);
+        $lastseenrecord = $DB->get_record('user_lastaccess', [
+            'userid' => $userid,
+            'courseid' => $courseid
+        ], 'timeaccess');
+        
+        $lastseen = $lastseenrecord ? $lastseenrecord->timeaccess : null;
         $seencms = self::get_seen_cms($userid);
 
         $params = [$courseid];

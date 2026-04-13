@@ -15,20 +15,38 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Event observer for block_newcoursecontents.
+ *
+ * Tracks when users view course modules.
  *
  * @package   block_newcoursecontents
  * @copyright 2026 Your Name <your@email.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace block_newcoursecontents;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_newcoursecontents';
-$plugin->version = 2026041309;
-$plugin->release = '1.0.1';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->requires = 2024051300;
-$plugin->supported = [405, 500];
-$plugin->dependencies = [];
-$plugin->cron = 3600;
+class observer {
+
+    /**
+     * Mark activity as seen when user views a course module.
+     *
+     * @param \core\event\course_module_viewed $event
+     */
+    public static function course_module_viewed($event) {
+        $cmid = $event->contextinstanceid;
+        $userid = $event->userid;
+
+        if (!$cmid || !$userid) {
+            return;
+        }
+
+        try {
+            manager::mark_activity_seen($userid, $cmid);
+        } catch (\Exception $e) {
+            // Silently fail - activity tracking is not critical
+        }
+    }
+}

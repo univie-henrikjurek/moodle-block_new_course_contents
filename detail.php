@@ -54,9 +54,11 @@ foreach ($activities as &$activity) {
 
 $lastseen = \block_newcoursecontents\manager::get_lastseen($USER->id, $courseid);
 
+$courseurl = new \moodle_url('/course/view.php', ['id' => $courseid]);
+
 $templatecontext = [
     'coursename' => \format_string($course->fullname),
-    'courseurl' => new \moodle_url('/course/view.php', ['id' => $courseid])->out(false),
+    'courseurl' => $courseurl->out(false),
     'lastvisitstr' => $lastseen ? \block_newcoursecontents\manager::format_time($lastseen) : \get_string('never', 'moodle'),
     'activities' => $activities,
 ];
