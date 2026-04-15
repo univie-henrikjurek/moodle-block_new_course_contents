@@ -113,5 +113,12 @@ const registerFilterEvents = (root) => {
 
 export const init = root => {
     root = $(root);
+    
+    // Sync radio buttons with localStorage preference after inline script runs
+    const savedView = localStorage.getItem(STORAGE_KEY);
+    if (savedView) {
+        root.find('[name="display"][value="' + savedView + '"]').prop('checked', true);
+    }
+    
     registerFilterEvents(root);
 };
