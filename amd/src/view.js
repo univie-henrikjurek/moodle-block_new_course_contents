@@ -149,9 +149,14 @@ export const clearSearch = (root) => {
 };
 
 export const reset = (root) => {
+    if (!root) {
+        return;
+    }
+
     if (loadedCourses.length > 0) {
-        renderCourses($(root), loadedCourses).then((html, js) => {
-            const contentRegion = $(root).find(SELECTORS.courseView.regionContent);
+        const $root = $(root);
+        renderCourses($root, loadedCourses).then((html, js) => {
+            const contentRegion = $root.find(SELECTORS.courseView.regionContent);
             return Templates.replaceNodeContents(contentRegion, html, js);
         }).catch(Notification.exception);
     } else {
