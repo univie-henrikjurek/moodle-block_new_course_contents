@@ -1,0 +1,61 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_newcoursecontents/view-cards
+
+    This template renders the cards view for the newcoursecontents block.
+}}
+<div class="card-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 mx-0">
+    {{#courses}}
+    <div class="col p-2">
+        <div class="card h-100" data-region="course-content" data-course-id="{{{id}}}">
+            <a href="{{viewurl}}" class="text-decoration-none">
+                <div class="card-img-top card-image" style='background-image: url("{{{courseimage}}}");'>
+                    <span class="visually-hidden">{{fullname}}</span>
+                </div>
+            </a>
+            <div class="card-body">
+                <a href="{{viewurl}}" class="text-decoration-none text-dark">
+                    <h6 class="card-title">{{{fullname}}}</h6>
+                </a>
+                {{#shortname}}
+                <p class="card-text text-muted small">{{{shortname}}}</p>
+                {{/shortname}}
+            </div>
+            <div class="card-footer bg-white d-flex align-items-center justify-content-between">
+                {{#activitycount}}
+                <span class="badge rounded-pill" style="background-color: {{badgecolor}};">
+                    {{activitycount}} {{#str}} new, block_newcoursecontents {{/str}}
+                </span>
+                {{/activitycount}}
+                {{#lastvisitstr}}
+                <small class="text-muted">
+                    <i class="fa-regular fa-eye me-1"></i>{{lastvisitstr}}
+                </small>
+                {{/lastvisitstr}}
+            </div>
+        </div>
+    </div>
+    {{/courses}}
+</div>
+
+{{^courses}}
+<div class="alert alert-info m-3">
+    <i class="fa-regular fa-inbox me-2"></i>
+    {{#str}} nocourses, block_newcoursecontents {{/str}}
+</div>
+{{/courses}}
