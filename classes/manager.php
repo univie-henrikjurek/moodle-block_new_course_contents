@@ -30,8 +30,8 @@ defined('MOODLE_INTERNAL') || die();
 
 class manager {
 
-    /** @var int Cache lifetime in seconds (30 minutes) */
-    const CACHE_LIFETIME = 1800;
+    /** @var int Cache lifetime in seconds (10 minutes) */
+    const CACHE_LIFETIME = 600;
 
     /** @var string Cache prefix */
     const CACHE_PREFIX = 'block_ncc_';
@@ -150,6 +150,9 @@ class manager {
                 'activitycount' => $activitycount,
                 'lastactivity' => $lastactivity,
                 'lastseen' => $lastseen,
+                'lastvisitstr' => $lastseen ? self::format_time($lastseen) : null,
+                'lasttimestr' => $lastactivity ? self::format_time($lastactivity) : null,
+                'hasnewactivity' => $activitycount > 0,
                 'detailurl' => new \moodle_url('/blocks/newcoursecontents/detail.php', [
                     'courseid' => $course->id
                 ]),
@@ -402,7 +405,7 @@ class manager {
             ]);
         }
 
-        self::get_cache()->delete('block_ncc_courses_' . $userid);
+        self::get_cache()->purge();
 
         return true;
     }
@@ -666,7 +669,7 @@ class manager {
      * @param int $userid User ID
      */
     public static function clear_cache($userid) {
-        self::get_cache()->delete('block_ncc_courses_' . $userid);
+        self::get_cache()->purge();
     }
 
     /**
