@@ -19,9 +19,9 @@
 
     This template renders the cards view for the newcoursecontents block.
 }}
-<div class="card-deck row row-cols-1 row-cols-sm-2 row-cols-md-3 mx-0">
+<ul class="card-deck row row-cols-1 row-cols-sm-2 row-cols-md-3 mx-0 list-unstyled mb-0" role="list" aria-label="{{#str}} aria:courselist, block_newcoursecontents, {{#courses}}{{.}}{{/courses}}{{^courses}}0{{/courses}} {{/str}}">
     {{#courses}}
-    <div class="col p-2">
+    <li class="col p-2" role="listitem">
         <div class="card h-100" data-region="course-content" data-course-id="{{{id}}}">
             <a href="{{viewurl}}" class="text-decoration-none">
                 <div class="card-img-top card-image" style='background-image: url("{{{courseimage}}}");'>
@@ -39,34 +39,34 @@
             <div class="card-footer bg-white d-flex align-items-center justify-content-between gap-2 flex-wrap">
                 <div class="d-flex align-items-center gap-2">
                     {{#activitycount}}
-                    <span class="badge rounded-pill" style="background-color: {{badgecolor}};">
+                    <span class="badge rounded-pill" style="background-color: {{badgecolor}};" aria-label="{{activitycount}} {{#str}} new, block_newcoursecontents {{/str}} {{fullname}}">
                         {{activitycount}} {{#str}} new, block_newcoursecontents {{/str}}
                     </span>
                     {{/activitycount}}
                     {{^activitycount}}
-                    <span class="badge rounded-pill bg-secondary">
+                    <span class="badge rounded-pill bg-secondary" aria-label="0 {{#str}} new, block_newcoursecontents {{/str}} {{fullname}}">
                         0 {{#str}} new, block_newcoursecontents {{/str}}
                     </span>
                     {{/activitycount}}
                     {{#lastvisitstr}}
-                    <small class="text-muted" title="{{#str}} lastvisit, block_newcoursecontents {{/str}}">
-                        <i class="fa-regular fa-eye me-1"></i>{{lastvisitstr}}
+                    <small class="text-muted" aria-label="{{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}">
+                        <i class="fa-regular fa-eye me-1" aria-hidden="true"></i>{{lastvisitstr}}
                     </small>
                     {{/lastvisitstr}}
                     {{^lastvisitstr}}
-                    <small class="text-muted">
-                        <i class="fa-regular fa-eye-slash me-1"></i>{{#str}} nevervisited, block_newcoursecontents {{/str}}
+                    <small class="text-muted" aria-label="{{#str}} aria:nevervisited, block_newcoursecontents {{/str}}">
+                        <i class="fa-regular fa-eye-slash me-1" aria-hidden="true"></i>{{#str}} nevervisited, block_newcoursecontents {{/str}}
                     </small>
                     {{/lastvisitstr}}
                 </div>
-                <a href="{{detailurl}}" class="btn btn-sm btn-outline-primary">
-                    <i class="fa-solid fa-list me-1"></i>{{#str}} viewdetails, block_newcoursecontents {{/str}}
+                <a href="{{detailurl}}" class="btn btn-sm btn-outline-primary" aria-label="{{#str}} viewdetails, block_newcoursecontents {{/str}} {{fullname}}">
+                    <i class="fa-solid fa-list me-1" aria-hidden="true"></i>{{#str}} viewdetails, block_newcoursecontents {{/str}}
                 </a>
             </div>
         </div>
-    </div>
+    </li>
     {{/courses}}
-</div>
+</ul>
 
 {{^courses}}
 <div class="alert alert-info m-3">

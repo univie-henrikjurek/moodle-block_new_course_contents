@@ -19,11 +19,12 @@
 
     This template renders the list view for the newcoursecontents block.
 }}
-<ul class="list-group">
+<ul class="list-group" role="list" aria-label="{{#str}} aria:courselist, block_newcoursecontents, {{#courses}}{{.}}{{/courses}}{{^courses}}0{{/courses}} {{/str}}">
     {{#courses}}
     <li class="list-group-item course-listitem border px-2 rounded"
         data-region="course-content"
-        data-course-id="{{{id}}}">
+        data-course-id="{{{id}}}"
+        role="listitem">
         <div class="row">
             <div class="col-md-2 d-flex align-items-center mb-sm-3 mb-md-0">
                 <a href="{{viewurl}}" tabindex="-1" class="mw-100 w-100">
@@ -42,32 +43,32 @@
                     {{{fullname}}}
                 </a>
                 {{#lastvisitstr}}
-                <div class="text-muted small">
-                    <i class="fa-regular fa-eye me-1"></i>
+                <div class="text-muted small" aria-label="{{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}">
+                    <i class="fa-regular fa-eye me-1" aria-hidden="true"></i>
                     {{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}
                 </div>
                 {{/lastvisitstr}}
                 {{^lastvisitstr}}
-                <div class="text-muted small">
-                    <i class="fa-regular fa-eye-slash me-1"></i>
+                <div class="text-muted small" aria-label="{{#str}} aria:nevervisited, block_newcoursecontents {{/str}}">
+                    <i class="fa-regular fa-eye-slash me-1" aria-hidden="true"></i>
                     {{#str}} nevervisited, block_newcoursecontents {{/str}}
                 </div>
                 {{/lastvisitstr}}
                 {{^visible}}
                 <div class="d-flex flex-wrap">
-                    <span class="badge bg-info text-white">{{#str}} hiddenfromstudents {{/str}}</span>
+                    <span class="badge bg-info text-white" aria-label="{{#str}} hiddenfromstudents {{/str}}">{{#str}} hiddenfromstudents {{/str}}</span>
                 </div>
                 {{/visible}}
             </div>
             <div class="col-md-2 d-flex align-items-center justify-content-end">
                 <div class="d-flex flex-row align-items-center gap-2">
                     {{#activitycount}}
-                    <span class="badge rounded-pill px-3 py-2" style="background-color: {{badgecolor}};">
+                    <span class="badge rounded-pill px-3 py-2" style="background-color: {{badgecolor}};" aria-label="{{activitycount}} {{#str}} new, block_newcoursecontents {{/str}} {{fullname}}">
                         {{activitycount}} {{#str}} new, block_newcoursecontents {{/str}}
                     </span>
                     {{/activitycount}}
-                    <a href="{{detailurl}}" class="btn btn-sm btn-outline-primary">
-                        <i class="fa-solid fa-list me-1"></i>{{#str}} viewdetails, block_newcoursecontents {{/str}}
+                    <a href="{{detailurl}}" class="btn btn-sm btn-outline-primary" aria-label="{{#str}} viewdetails, block_newcoursecontents {{/str}} {{fullname}}">
+                        <i class="fa-solid fa-list me-1" aria-hidden="true"></i>{{#str}} viewdetails, block_newcoursecontents {{/str}}
                     </a>
                 </div>
             </div>

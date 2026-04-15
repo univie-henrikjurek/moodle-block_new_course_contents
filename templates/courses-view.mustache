@@ -24,8 +24,10 @@
     data-display="{{view}}"
     data-grouping="{{grouping}}"
     data-sort="{{sort}}"
-    data-prev-display="{{view}}">
-    <div data-region="course-view-content">
+    data-prev-display="{{view}}"
+    aria-live="polite"
+    aria-atomic="false">
+    <div data-region="course-view-content" role="region" aria-label="{{#str}} aria:courselist, block_newcoursecontents, {{#courses}}{{.}}{{/courses}}{{^courses}}0{{/courses}} {{/str}}">
         {{#isviewcard}}
             {{> block_newcoursecontents/view-cards }}
         {{/isviewcard}}
