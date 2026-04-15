@@ -109,15 +109,17 @@ const registerDisplayToggle = (root) => {
             courseRegion.attr('data-display', value);
         }
 
-        saveUserPreference('display', value).then((response) => {
-            if (response && response.error) {
-                console.error('Failed to save preference:', response.error);
-            } else {
+        // First update UI immediately
+        View.reset(root);
+
+        // Then save preference and reload on success
+        saveUserPreference('display', value)
+            .then(() => {
                 window.location.reload();
-            }
-        }).catch((error) => {
-            console.error('Error saving preference:', error);
-        });
+            })
+            .catch((err) => {
+                console.error('Error saving view preference:', err);
+            });
     });
 };
 
