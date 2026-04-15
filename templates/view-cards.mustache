@@ -19,7 +19,7 @@
 
     This template renders the cards view for the newcoursecontents block.
 }}
-<ul class="card-deck row row-cols-1 row-cols-sm-2 row-cols-md-3 mx-0 list-unstyled mb-0" role="list" aria-label="{{#str}} aria:courselist, block_newcoursecontents, {{#courses}}{{.}}{{/courses}}{{^courses}}0{{/courses}} {{/str}}">
+<ul class="card-deck row row-cols-1 row-cols-sm-2 row-cols-md-3 mx-0 list-unstyled mb-0" role="list" aria-label="{{#str}} aria:courselist, block_newcoursecontents {{/str}}">
     {{#courses}}
     <li class="col p-2" role="listitem">
         <div class="card h-100" data-region="course-content" data-course-id="{{{id}}}">

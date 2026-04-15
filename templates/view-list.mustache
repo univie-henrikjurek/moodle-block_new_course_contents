@@ -19,7 +19,7 @@
 
     This template renders the list view for the newcoursecontents block.
 }}
-<ul class="list-group" role="list" aria-label="{{#str}} aria:courselist, block_newcoursecontents, {{#courses}}{{.}}{{/courses}}{{^courses}}0{{/courses}} {{/str}}">
+<ul class="list-group" role="list" aria-label="{{#str}} aria:courselist, block_newcoursecontents {{/str}}">
     {{#courses}}
     <li class="list-group-item course-listitem border px-2 rounded"
         data-region="course-content"
