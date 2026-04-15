@@ -45,8 +45,9 @@ class block_newcoursecontents extends block_base {
             $sort = get_user_preferences('block_newcoursecontents_user_sort_preference', 'lastaccessed');
             $search = get_user_preferences('block_newcoursecontents_user_search_preference', '');
             $view = get_user_preferences('block_newcoursecontents_user_view_preference', 'card');
+            $grouping = get_user_preferences('block_newcoursecontents_user_grouping_preference', 'all');
 
-            $courses = \block_newcoursecontents\manager::get_courses_with_activities($USER->id, $sort, $search);
+            $courses = \block_newcoursecontents\manager::get_courses_with_activities($USER->id, $sort, $search, $grouping);
 
             $badgecolor = get_config('block_newcoursecontents', 'badgecolor');
             if (empty($badgecolor)) {
@@ -83,11 +84,18 @@ class block_newcoursecontents extends block_base {
                 'search' => $search,
                 'sort' => $sort,
                 'view' => $view,
+                'grouping' => $grouping,
                 'issortlastaccessed' => ($sort === 'lastaccessed'),
                 'issorttitle' => ($sort === 'title'),
                 'issortshortname' => ($sort === 'shortname'),
                 'isviewcard' => ($view === 'card'),
                 'isviewlist' => ($view === 'list'),
+                'isall' => ($grouping === 'all'),
+                'isinprogress' => ($grouping === 'inprogress'),
+                'isfuture' => ($grouping === 'future'),
+                'ispast' => ($grouping === 'past'),
+                'isfavourites' => ($grouping === 'favourites'),
+                'displaydropdown' => true,
                 'uniqid' => uniqid(),
             ];
 

@@ -102,7 +102,7 @@ const init = (root) => {
 
 const loadCourses = (root, filters, searchValue = '') => {
     const contentRegion = root.find(SELECTORS.courseView.regionContent);
-    
+
     contentRegion.addClass('loading');
 
     fetchCourses(filters, searchValue).then(courses => {

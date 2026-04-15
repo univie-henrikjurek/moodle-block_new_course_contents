@@ -102,3 +102,19 @@ $string['sortbytitle'] = 'Sort by name';
 $string['sortbyshortname'] = 'Sort by shortname';
 $string['viewcard'] = 'Card view';
 $string['viewlist'] = 'List view';
+
+$string['allincludinghidden'] = 'All (including hidden)';
+$string['all'] = 'All';
+$string['inprogress'] = 'In progress';
+$string['future'] = 'Future';
+$string['past'] = 'Past';
+$string['favourites'] = 'Starred';
+
+$string['aria:groupingdropdown'] = 'Course grouping selector';
+$string['aria:allcoursesincludinghidden'] = 'Show all courses including hidden';
+$string['aria:allcourses'] = 'Show all courses';
+$string['aria:inprogress'] = 'Show in-progress courses';
+$string['aria:future'] = 'Show future courses';
+$string['aria:past'] = 'Show past courses';
+$string['aria:favourites'] = 'Show starred courses';
+$string['aria:controls'] = 'Course list controls';

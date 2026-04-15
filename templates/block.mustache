@@ -14,50 +14,41 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
-<div class="block_newcoursecontents" data-region="newcoursecontents">
-    <div class="ncc-controls pb-3 mb-3 border-bottom">
-        <div class="row g-2 align-items-center">
-            <div class="col-12 col-md-4">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-white">
-                        <i class="fa-solid fa-search text-muted"></i>
-                    </span>
-                    <input type="text" 
-                           class="form-control ncc-search" 
-                           id="ncc-search-{{uniqid}}"
-                           placeholder="{{#str}} searchcourses, block_newcoursecontents {{/str}}" 
-                           value="{{search}}">
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <select class="form-select form-select-sm ncc-sort" id="ncc-sort-{{uniqid}}">
-                    <option value="lastaccessed" {{#issortlastaccessed}}selected{{/issortlastaccessed}}>
-                        {{#str}} sortbylastaccessed, block_newcoursecontents {{/str}}
-                    </option>
-                    <option value="title" {{#issorttitle}}selected{{/issorttitle}}>
-                        {{#str}} sortbytitle, block_newcoursecontents {{/str}}
-                    </option>
-                    <option value="shortname" {{#issortshortname}}selected{{/issortshortname}}>
-                        {{#str}} sortbyshortname, block_newcoursecontents {{/str}}
-                    </option>
-                </select>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="btn-group btn-group-sm float-end" role="group">
-                    <input type="radio" class="btn-check ncc-view" name="ncc-view-{{uniqid}}" id="ncc-view-card-{{uniqid}}" value="card" {{#isviewcard}}checked{{/isviewcard}}>
-                    <label class="btn btn-outline-secondary" for="ncc-view-card-{{uniqid}}" title="{{#str}} viewcard, block_newcoursecontents {{/str}}">
-                        <i class="fa-solid fa-grip"></i>
-                    </label>
-                    <input type="radio" class="btn-check ncc-view" name="ncc-view-{{uniqid}}" id="ncc-view-list-{{uniqid}}" value="list" {{#isviewlist}}checked{{/isviewlist}}>
-                    <label class="btn btn-outline-secondary" for="ncc-view-list-{{uniqid}}" title="{{#str}} viewlist, block_newcoursecontents {{/str}}">
-                        <i class="fa-solid fa-list"></i>
-                    </label>
-                </div>
-            </div>
+{{!
+    @template block_newcoursecontents/block
+
+    This template renders the block with filter controls.
+}}
+<div id="block-newcoursecontents-{{uniqid}}" class="block-newcoursecontents" data-region="newcoursecontents">
+    <div data-region="filter" class="d-flex align-items-center my-2" aria-label="{{#str}} aria:controls, block_newcoursecontents {{/str}}">
+        <div class="d-flex flex-wrap gap-1 align-items-center w-100">
+            {{> block_newcoursecontents/nav-grouping-selector }}
+
+            {{> block_newcoursecontents/nav-search-widget }}
+
+            {{> block_newcoursecontents/nav-sort-selector }}
+
+            {{#displaydropdown}}
+                {{> block_newcoursecontents/nav-display-selector }}
+            {{/displaydropdown}}
         </div>
     </div>
-    
-    <div class="ncc-course-list" id="ncc-course-list-{{uniqid}}">
-        {{> block_newcoursecontents/course_list }}
+
+    <div class="container-fluid p-0">
+        {{> block_newcoursecontents/courses-view }}
     </div>
 </div>
+{{#js}}
+require(
+[
+    'jquery',
+    'block_newcoursecontents/main',
+],
+function(
+    $,
+    Main
+) {
+    var root = $('#block-newcoursecontents-{{uniqid}}');
+    Main.init(root);
+});
+{{/js}}

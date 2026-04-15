@@ -24,11 +24,18 @@
     data-display="{{view}}"
     data-grouping="{{grouping}}"
     data-sort="{{sort}}"
-    data-prev-display="{{view}}"
-    data-paging="{{paging}}"
-    data-totalcoursecount="{{totalcoursecount}}"
-    data-displaycategories="{{displaycategories}}">
+    data-prev-display="{{view}}">
     <div data-region="course-view-content">
-        {{> block_newcoursecontents/placeholders }}
+        {{#isviewcard}}
+            {{> block_newcoursecontents/view-cards }}
+        {{/isviewcard}}
+        {{#isviewlist}}
+            {{> block_newcoursecontents/view-list }}
+        {{/isviewlist}}
+        {{^isviewcard}}
+        {{^isviewlist}}
+            {{> block_newcoursecontents/view-cards }}
+        {{/isviewlist}}
+        {{/isviewcard}}
     </div>
 </div>

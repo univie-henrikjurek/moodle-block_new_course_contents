@@ -255,6 +255,7 @@ class external extends \external_api {
             'sort' => new \external_value(PARAM_ALPHA, 'Sort order', VALUE_DEFAULT, 'lastaccessed'),
             'search' => new \external_value(PARAM_TEXT, 'Search term', VALUE_DEFAULT, ''),
             'view' => new \external_value(PARAM_ALPHA, 'View mode', VALUE_DEFAULT, 'card'),
+            'grouping' => new \external_value(PARAM_ALPHA, 'Grouping filter', VALUE_DEFAULT, 'all'),
         ]);
     }
 
@@ -291,20 +292,22 @@ class external extends \external_api {
      * @param string $sort Sort order
      * @param string $search Search term
      * @param string $view View mode
+     * @param string $grouping Grouping filter
      * @return array Courses data
      */
-    public static function get_courses($sort = 'lastaccessed', $search = '', $view = 'card') {
+    public static function get_courses($sort = 'lastaccessed', $search = '', $view = 'card', $grouping = 'all') {
         global $USER;
 
         $params = self::validate_parameters(self::get_courses_parameters(), [
             'sort' => $sort,
             'search' => $search,
             'view' => $view,
+            'grouping' => $grouping,
         ]);
 
         require_login();
 
-        $courses = manager::get_courses_with_activities($USER->id, $params['sort'], $params['search']);
+        $courses = manager::get_courses_with_activities($USER->id, $params['sort'], $params['search'], $params['grouping']);
 
         $badgecolor = get_config('block_newcoursecontents', 'badgecolor');
         if (empty($badgecolor)) {

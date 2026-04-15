@@ -63,12 +63,13 @@ class manager {
      * @param int $userid User ID
      * @param string $sort Sort order: 'title', 'shortname', or 'lastaccessed'
      * @param string $search Search term for filtering courses
+     * @param string $grouping Grouping: 'all', 'inprogress', 'future', 'past', 'favourites'
      * @return array Array of course data with activity counts
      */
-    public static function get_courses_with_activities($userid, $sort = 'lastaccessed', $search = '') {
+    public static function get_courses_with_activities($userid, $sort = 'lastaccessed', $search = '', $grouping = 'all') {
         global $DB, $PAGE;
         
-        $cachekey = "{$userid}_{$sort}_{$search}";
+        $cachekey = "{$userid}_{$sort}_{$search}_{$grouping}";
         $cached = self::get_cache()->get($cachekey);
         if ($cached !== false) {
             return $cached;
@@ -97,6 +98,12 @@ class manager {
                     || stripos($course->shortname, $searchlower) !== false;
             });
         }
+
+        if (empty($courses)) {
+            return [];
+        }
+
+        $courses = self::apply_grouping($courses, $grouping, $userid);
 
         if (empty($courses)) {
             return [];
@@ -165,6 +172,82 @@ class manager {
 
         self::get_cache()->set($cachekey, $result);
 
+        return $result;
+    }
+
+    /**
+     * Apply grouping filter to courses.
+     *
+     * @param array $courses Array of course objects
+     * @param string $grouping Grouping type: 'all', 'inprogress', 'future', 'past', 'favourites'
+     * @param int $userid User ID
+     * @return array Filtered courses
+     */
+    protected static function apply_grouping($courses, $grouping, $userid) {
+        global $DB;
+        
+        $now = time();
+        
+        switch ($grouping) {
+            case 'inprogress':
+                return array_filter($courses, function($course) {
+                    $hasstart = isset($course->startdate) && $course->startdate > 0;
+                    $hasend = isset($course->enddate) && $course->enddate > 0;
+                    
+                    if ($hasstart && $course->startdate > $now) {
+                        return false;
+                    }
+                    if ($hasend && $course->enddate < $now) {
+                        return false;
+                    }
+                    return true;
+                });
+                
+            case 'future':
+                return array_filter($courses, function($course) {
+                    return isset($course->startdate) && $course->startdate > $now;
+                });
+                
+            case 'past':
+                return array_filter($courses, function($course) {
+                    if (!isset($course->enddate) || $course->enddate == 0) {
+                        return isset($course->startdate) && $course->startdate > 0 && ($now - $course->startdate) > 31536000;
+                    }
+                    return $course->enddate < $now;
+                });
+                
+            case 'favourites':
+                $favs = self::get_user_favourite_courses($userid);
+                return array_filter($courses, function($course) use ($favs) {
+                    return isset($favs[$course->id]);
+                });
+                
+            case 'all':
+            default:
+                return $courses;
+        }
+    }
+
+    /**
+     * Get user's favourite courses.
+     *
+     * @param int $userid User ID
+     * @return array Array of favourite course IDs
+     */
+    protected static function get_user_favourite_courses($userid) {
+        global $DB;
+        
+        $favs = $DB->get_records('user_favourites', [
+            'userid' => $userid,
+            'component' => 'core_course',
+            'itemtype' => 'courses'
+        ], '', 'itemid');
+        
+        $result = [];
+        foreach ($favs as $fav) {
+            $result[$fav->itemid] = true;
+        }
+        
         return $result;
     }
 
