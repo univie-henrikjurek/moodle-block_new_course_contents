@@ -22,8 +22,32 @@
 
 import $ from 'jquery';
 import * as CustomEvents from 'core/custom_interaction_events';
+import Ajax from 'core/ajax';
 import * as View from 'block_newcoursecontents/view';
 import SELECTORS from 'block_newcoursecontents/selectors';
+
+const saveUserPreference = (filter, value) => {
+    let prefName = null;
+    if (filter === 'display') {
+        prefName = 'block_newcoursecontents_user_view_preference';
+    } else if (filter === 'sort') {
+        prefName = 'block_newcoursecontents_user_sort_preference';
+    } else if (filter === 'grouping') {
+        prefName = 'block_newcoursecontents_user_grouping_preference';
+    } else {
+        return Promise.resolve();
+    }
+
+    return Ajax.call([{
+        methodname: 'core_user_update_user_preferences',
+        args: {
+            preferences: [{
+                name: prefName,
+                value: value
+            }]
+        }
+    }])[0];
+};
 
 const registerFilterEvents = (root) => {
     const filterRegion = root.find(SELECTORS.FILTERS);
@@ -54,6 +78,8 @@ const registerFilterEvents = (root) => {
                 root.find('[name="display"][value="' + value + '"]').prop('checked', true);
             }
 
+            saveUserPreference(filterType, value);
+
             const page = document.querySelector(SELECTORS.region.selectBlock);
             if (page) {
                 const input = page.querySelector(SELECTORS.region.searchInput);
@@ -83,6 +109,7 @@ const registerDisplayToggle = (root) => {
             courseRegion.attr('data-display', value);
         }
 
+        saveUserPreference('display', value);
         View.reset(root);
     });
 };
