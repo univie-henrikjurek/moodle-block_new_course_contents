@@ -214,8 +214,10 @@
     font-weight: 500;
 }
 
-.ncc-activity-action .btn {
+.activity-actions .btn {
     white-space: nowrap;
+    width: 100%;
+    min-width: 120px;
 }
 
 /* Empty state in modal */
