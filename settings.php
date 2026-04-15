@@ -23,3 +23,13 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_configtext(
+        'block_newcoursecontents/badgecolor',
+        get_string('badgecolor', 'block_newcoursecontents'),
+        get_string('badgecolor_desc', 'block_newcoursecontents'),
+        '#0063A6',
+        PARAM_TEXT
+    ));
+}

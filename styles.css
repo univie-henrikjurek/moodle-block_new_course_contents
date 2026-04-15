@@ -4,54 +4,36 @@
     font-size: 0.9rem;
 }
 
-.block_newcoursecontents .course-card {
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-    border: 1px solid #e9ecef;
+/* List View Styles - similar to myoverview view-list */
+.block_newcoursecontents .list-group {
+    margin-bottom: 0;
 }
 
-.block_newcoursecontents .course-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-1px);
+.block_newcoursecontents .course-listitem {
+    transition: background-color 0.2s ease;
+    padding: 0.75rem 0.5rem;
 }
 
-.block_newcoursecontents .course-name {
-    line-height: 1.3;
+.block_newcoursecontents .course-listitem:hover {
+    background-color: #f8f9fa;
 }
 
-.block_newcoursecontents .course-name a:hover {
-    color: #0d6efd !important;
+.block_newcoursecontents .list-image {
+    height: 80px;
+    background-size: cover;
+    background-position: center;
+    background-color: #e9ecef;
 }
 
-.block_newcoursecontents .course-meta {
-    line-height: 1.4;
-}
-
-.block_newcoursecontents .meta-item {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-}
-
-.block_newcoursecontents .meta-item i {
-    width: 16px;
-    text-align: center;
-}
-
-.block_newcoursecontents .activity-badge {
-    min-width: 2.5rem;
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.block_newcoursecontents .activity-badge .badge-link {
-    color: inherit;
-}
-
-.block_newcoursecontents .activity-badge .badge-link:hover {
+.block_newcoursecontents .coursename {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #212529;
     text-decoration: none;
-    opacity: 0.9;
+}
+
+.block_newcoursecontents .coursename:hover {
+    color: #0d6efd;
 }
 
 .block_newcoursecontents .badge-orange {
@@ -62,11 +44,7 @@
     background-color: #6c757d;
 }
 
-.block_newcoursecontents .block-footer {
-    font-size: 0.75rem;
-    padding-top: 0.5rem;
-}
-
+/* Detail Page Styles */
 .block-newcoursecontents-detail .activity-item {
     transition: background-color 0.2s ease;
 }
@@ -84,7 +62,7 @@
     border-bottom: 2px solid #dee2e6;
 }
 
-/* Activity icon styling - 32px as requested */
+/* Activity icon styling - 32px */
 .activity-icon {
     width: 32px;
     height: 32px;
@@ -128,12 +106,95 @@
 
 /* Responsive adjustments */
 @media (max-width: 576px) {
-    .block_newcoursecontents .activity-badge {
-        min-width: 2rem;
-        font-size: 0.9rem;
+    .block_newcoursecontents .list-image {
+        height: 60px;
     }
     
-    .block_newcoursecontents .course-meta {
-        font-size: 0.8rem;
+    .block_newcoursecontents .course-listitem .row {
+        flex-direction: column;
     }
+    
+    .block_newcoursecontents .course-listitem .col-md-2,
+    .block_newcoursecontents .course-listitem .col-md-8,
+    .block_newcoursecontents .course-listitem .col-md-2 {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .block_newcoursecontents .course-listitem .col-md-2.d-flex.align-items-center {
+        display: block !important;
+    }
+}
+
+/* Modal specific styles - using .modal-content etc. since modal is injected dynamically */
+.modal-content {
+    border-radius: 0.75rem;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-header .modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Modal activity items */
+.ncc-activity-item {
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ncc-activity-item:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ncc-activity-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e9ecef;
+    border-radius: 0.5rem;
+    flex-shrink: 0;
+}
+
+.ncc-activity-icon .icon {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+.ncc-icon-fallback {
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.ncc-activity-badges .badge {
+    font-weight: 500;
+}
+
+.ncc-activity-action .btn {
+    white-space: nowrap;
+}
+
+/* Empty state in modal */
+.ncc-empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+}
+
+.ncc-empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
 }

@@ -56,6 +56,10 @@ $string['modified'] = 'Modified';
 $string['added'] = 'Added';
 $string['open'] = 'Open';
 $string['gotocourse'] = 'Go to course';
+$string['gotocoursebutton'] = 'Go to course';
+$string['gotodashboard'] = 'Back to Dashboard';
+$string['markallseen'] = 'Mark all as seen';
+$string['markasseen'] = 'Mark as seen';
 
 $string['nochanges'] = 'No new or changed activities since your last visit.';
 $string['nochanges_desc'] = 'Check back later for updates.';
@@ -83,5 +87,11 @@ $string['cache_lifetime_default'] = '30';
 $string['show_archived'] = 'Show Archived Courses';
 $string['show_archived_desc'] = 'Include archived courses in the activity list.';
 
+$string['badgecolor'] = 'Badge Color';
+$string['badgecolor_desc'] = 'The background color for the activity badge (e.g., #0063A6).';
+
 $string['privacy:metadata'] = 'The New Course Contents block stores information about your last visit to each course.';
 $string['privacy:metadata:lastseen'] = 'The timestamp of your last visit to a specific course.';
+
+$string['loading'] = 'Loading...';
+$string['errorloading'] = 'Error loading course details';

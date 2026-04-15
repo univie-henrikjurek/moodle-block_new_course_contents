@@ -16,15 +16,23 @@
 }}
 <div class="block-newcoursecontents-detail">
     <div class="course-header mb-4 pb-3 border-bottom">
-        <h2 class="mb-2">
-            <a href="{{{courseurl}}}" class="text-decoration-none">{{coursename}}</a>
-        </h2>
-        <p class="text-muted mb-0">
-            <i class="fa-regular fa-eye me-1"></i>
-            {{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}
-        </p>
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div>
+                <h2 class="mb-2">
+                    <a href="{{{courseurl}}}" class="text-decoration-none">{{coursename}}</a>
+                </h2>
+                <p class="text-muted mb-0">
+                    <i class="fa-regular fa-eye me-1"></i>
+                    {{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}
+                </p>
+            </div>
+            <a href="{{{courseurl}}}" class="btn btn-sm" style="background-color: {{badgecolor}}; color: white;">
+                <i class="fa-solid fa-graduation-cap me-1"></i>{{#str}} gotocoursebutton, block_newcoursecontents {{/str}}
+            </a>
+        </div>
     </div>
 
+    <div class="activity-list">
     {{#activities}}
     <div class="activity-item mb-3 p-3 border rounded shadow-sm">
         <div class="d-flex align-items-start">
@@ -62,14 +70,18 @@
                     {{/timemodifiedstr}}
                 </div>
             </div>
-            <div class="activity-actions ms-3">
+            <div class="activity-actions ms-3 d-flex flex-column gap-2">
                 <a href="{{{url}}}" class="btn btn-sm btn-primary">
                     <i class="fa-solid fa-arrow-right me-1"></i>{{#str}} open, block_newcoursecontents {{/str}}
                 </a>
+                <button type="button" class="btn btn-sm btn-outline-secondary ncc-mark-single" data-cmid="{{cmid}}" data-courseid="{{{courseid}}}">
+                    <i class="fa-regular fa-check me-1"></i>{{#str}} markasseen, block_newcoursecontents {{/str}}
+                </button>
             </div>
         </div>
     </div>
     {{/activities}}
+    </div>
 
     {{^activities}}
     <div class="alert alert-success">
@@ -79,8 +91,17 @@
     {{/activities}}
 
     <div class="mt-4 text-center">
-        <a href="{{{courseurl}}}" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-arrow-left me-2"></i>{{#str}} gotocourse, block_newcoursecontents {{/str}}
+        {{#hasactivities}}
+        <form method="post" class="d-inline me-2 mark-all-form">
+            <input type="hidden" name="courseid" value="{{courseid}}">
+            <input type="hidden" name="markseen" value="1">
+            <button type="submit" class="btn btn-success">
+                <i class="fa-solid fa-check-double me-2"></i>{{#str}} markallseen, block_newcoursecontents {{/str}}
+            </button>
+        </form>
+        {{/hasactivities}}
+        <a href="{{{dashboardurl}}}" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-house me-2"></i>{{#str}} gotodashboard, block_newcoursecontents {{/str}}
         </a>
     </div>
 </div>

@@ -1,0 +1,103 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+<div class="modal fade" id="ncc-modal-{{courseid}}" tabindex="-1" aria-labelledby="ncc-modal-title-{{courseid}}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ncc-modal-title-{{courseid}}">
+                    <i class="fa-regular fa-bell me-2"></i>
+                    {{coursename}}
+                </h5>
+                <button type="button" class="btn-close ncc-modal-close" aria-label="{{str_close}}"></button>
+            </div>
+            <div class="modal-body">
+                <div class="ncc-modal-meta mb-3">
+                    <span class="text-muted small">
+                        <i class="fa-regular fa-eye me-1"></i>
+                        {{str_lastvisit}}: {{lastvisitstr}}
+                    </span>
+                </div>
+
+                {{#activities}}
+                <div class="ncc-activity-item mb-3 p-3 border rounded" data-cmid="{{cmid}}">
+                    <div class="d-flex align-items-start">
+                        <div class="ncc-activity-icon me-3">
+                            <span class="ncc-icon-wrapper">
+                                {{#pix}}{{iconname}}, core, {{typename}}{{/pix}}
+                                <span class="ncc-icon-fallback d-none">{{typename}}</span>
+                            </span>
+                        </div>
+                        <div class="ncc-activity-content flex-grow-1">
+                            <h6 class="mb-2">
+                                <a href="{{{url}}}" class="text-decoration-none">{{name}}</a>
+                            </h6>
+                            <div class="ncc-activity-badges mb-2">
+                                <span class="badge bg-secondary me-1">{{type}}</span>
+                                {{#isnew}}
+                                <span class="badge bg-success me-1">
+                                    <i class="fa-solid fa-star me-1"></i>{{str_new}}
+                                </span>
+                                {{/isnew}}
+                                {{#wasmodified}}
+                                <span class="badge bg-warning text-dark me-1">
+                                    <i class="fa-solid fa-pencil me-1"></i>{{str_modified}}
+                                </span>
+                                {{/wasmodified}}
+                            </div>
+                            <div class="ncc-activity-dates small text-muted">
+                                <div>
+                                    <i class="fa-regular fa-calendar-plus me-1"></i>
+                                    {{str_added}}: {{timeaddedstr}}
+                                </div>
+                                {{#timemodifiedstr}}
+                                <div class="mt-1">
+                                    <i class="fa-regular fa-calendar-check me-1"></i>
+                                    {{str_modified}}: {{timemodifiedstr}}
+                                </div>
+                                {{/timemodifiedstr}}
+                            </div>
+                        </div>
+                        <div class="ncc-activity-action ms-3 d-flex flex-column gap-2">
+                            <a href="{{{url}}}" class="btn btn-sm btn-primary" target="_blank">
+                                <i class="fa-solid fa-arrow-right me-1"></i>{{str_open}}
+                            </a>
+                            <button type="button" class="btn btn-sm btn-outline-secondary ncc-mark-seen" data-cmid="{{cmid}}">
+                                <i class="fa-regular fa-check me-1"></i>{{str_markasseen}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {{/activities}}
+
+                {{^activities}}
+                <div class="alert alert-success">
+                    <i class="fa-regular fa-check-circle me-2"></i>
+                    {{str_nochanges}}
+                </div>
+                {{/activities}}
+            </div>
+            <div class="modal-footer">
+                <a href="{{{courseurl}}}" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-arrow-left me-2"></i>{{str_gotocourse}}
+                </a>
+                <button type="button" class="btn btn-secondary ncc-modal-close">
+                    {{str_close}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
