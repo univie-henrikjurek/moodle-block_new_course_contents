@@ -26,6 +26,8 @@ import Ajax from 'core/ajax';
 import * as View from 'block_newcoursecontents/view';
 import SELECTORS from 'block_newcoursecontents/selectors';
 
+const STORAGE_KEY = 'block_newcoursecontents_view';
+
 const saveUserPreference = (filter, value) => {
     let prefName = null;
     if (filter === 'display') {
@@ -38,6 +40,12 @@ const saveUserPreference = (filter, value) => {
         return Promise.resolve();
     }
 
+    // Save to localStorage immediately for instant UI
+    if (filter === 'display') {
+        localStorage.setItem(STORAGE_KEY, value);
+    }
+
+    // Also sync to server (async, non-blocking)
     return Ajax.call([{
         methodname: 'core_user_update_user_preferences',
         args: {
@@ -72,17 +80,13 @@ const registerFilterEvents = (root) => {
             const courseRegion = root.find(SELECTORS.courseView.region);
             if (courseRegion.length > 0) {
                 courseRegion.attr('data-' + filterType, value);
-                console.log('Filter changed:', filterType, value);
-                console.log('data-display now:', courseRegion.attr('data-display'));
             }
 
             if (filterType === 'display') {
                 root.find('[name="display"][value="' + value + '"]').prop('checked', true);
-                // For display changes, just reload to pick up the new preference
-                saveUserPreference(filterType, value).then(() => {
-                    console.log('Preference saved, reloading...');
-                    window.location.reload();
-                });
+                // Update UI immediately, sync to server in background
+                View.reset(root);
+                saveUserPreference(filterType, value);
                 data.originalEvent.preventDefault();
                 return;
             }
@@ -109,5 +113,22 @@ const registerFilterEvents = (root) => {
 
 export const init = root => {
     root = $(root);
+    
+    // Check localStorage for saved view preference
+    const savedView = localStorage.getItem(STORAGE_KEY);
+    if (savedView) {
+        const courseRegion = root.find(SELECTORS.courseView.region);
+        if (courseRegion.length > 0) {
+            const currentView = courseRegion.attr('data-display');
+            if (currentView !== savedView) {
+                courseRegion.attr('data-display', savedView);
+                // Update the radio buttons
+                root.find('[name="display"][value="' + savedView + '"]').prop('checked', true);
+                // Render with new view
+                View.reset(root);
+            }
+        }
+    }
+    
     registerFilterEvents(root);
 };
