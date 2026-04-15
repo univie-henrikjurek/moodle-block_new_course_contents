@@ -244,4 +244,94 @@ class external extends \external_api {
 
         return true;
     }
+
+    /**
+     * Returns description of get_courses parameters.
+     *
+     * @return \external_function_parameters
+     */
+    public static function get_courses_parameters() {
+        return new \external_function_parameters([
+            'sort' => new \external_value(PARAM_ALPHA, 'Sort order', VALUE_DEFAULT, 'lastaccessed'),
+            'search' => new \external_value(PARAM_TEXT, 'Search term', VALUE_DEFAULT, ''),
+            'view' => new \external_value(PARAM_ALPHA, 'View mode', VALUE_DEFAULT, 'card'),
+        ]);
+    }
+
+    /**
+     * Returns description of get_courses returns.
+     *
+     * @return \external_description
+     */
+    public static function get_courses_returns() {
+        return new \external_multiple_structure(
+            new \external_single_structure([
+                'id' => new \external_value(PARAM_INT, 'Course ID'),
+                'fullname' => new \external_value(PARAM_TEXT, 'Course full name'),
+                'shortname' => new \external_value(PARAM_TEXT, 'Course short name'),
+                'visible' => new \external_value(PARAM_INT, 'Course visibility'),
+                'courseimage' => new \external_value(PARAM_URL, 'Course image URL', VALUE_OPTIONAL),
+                'activitycount' => new \external_value(PARAM_INT, 'Activity count'),
+                'lastactivity' => new \external_value(PARAM_INT, 'Last activity timestamp', VALUE_OPTIONAL),
+                'lastseen' => new \external_value(PARAM_INT, 'Last seen timestamp', VALUE_OPTIONAL),
+                'detailurl' => new \external_value(PARAM_URL, 'Detail page URL'),
+                'courseurl' => new \external_value(PARAM_URL, 'Course URL'),
+                'badgeclass' => new \external_value(PARAM_TEXT, 'Badge CSS class'),
+                'lasttimestr' => new \external_value(PARAM_TEXT, 'Last activity string', VALUE_OPTIONAL),
+                'lastvisitstr' => new \external_value(PARAM_TEXT, 'Last visit string', VALUE_OPTIONAL),
+                'hasnewactivity' => new \external_value(PARAM_BOOL, 'Has new activity'),
+                'badgecolor' => new \external_value(PARAM_TEXT, 'Badge color'),
+            ])
+        );
+    }
+
+    /**
+     * Get courses for the block with filters.
+     *
+     * @param string $sort Sort order
+     * @param string $search Search term
+     * @param string $view View mode
+     * @return array Courses data
+     */
+    public static function get_courses($sort = 'lastaccessed', $search = '', $view = 'card') {
+        global $USER;
+
+        $params = self::validate_parameters(self::get_courses_parameters(), [
+            'sort' => $sort,
+            'search' => $search,
+            'view' => $view,
+        ]);
+
+        require_login();
+
+        $courses = manager::get_courses_with_activities($USER->id, $params['sort'], $params['search']);
+
+        $badgecolor = get_config('block_newcoursecontents', 'badgecolor');
+        if (empty($badgecolor)) {
+            $badgecolor = '#0063A6';
+        }
+
+        $result = [];
+        foreach ($courses as $course) {
+            $result[] = [
+                'id' => $course['id'],
+                'fullname' => $course['fullname'],
+                'shortname' => $course['shortname'],
+                'visible' => $course['visible'],
+                'courseimage' => $course['courseimage'] ?? null,
+                'activitycount' => $course['activitycount'],
+                'lastactivity' => $course['lastactivity'] ?? null,
+                'lastseen' => $course['lastseen'] ?? null,
+                'detailurl' => is_object($course['detailurl']) ? $course['detailurl']->out(false) : $course['detailurl'],
+                'courseurl' => is_object($course['courseurl']) ? $course['courseurl']->out(false) : $course['courseurl'],
+                'badgeclass' => $course['badgeclass'],
+                'lasttimestr' => $course['lasttimestr'] ?? null,
+                'lastvisitstr' => $course['lastvisitstr'] ?? null,
+                'hasnewactivity' => $course['hasnewactivity'],
+                'badgecolor' => $badgecolor,
+            ];
+        }
+
+        return $result;
+    }
 }

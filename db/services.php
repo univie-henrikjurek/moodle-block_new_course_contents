@@ -25,6 +25,15 @@
 defined('MOODLE_INTERNAL') || die();
 
 $functions = [
+    'block_newcoursecontents_get_courses' => [
+        'classname' => 'block_newcoursecontents\\external',
+        'methodname' => 'get_courses',
+        'classpath' => 'blocks/newcoursecontents/classes/external.php',
+        'description' => 'Get courses with activities for the block',
+        'type' => 'read',
+        'ajax' => true,
+        'capabilities' => 'moodle/course:view',
+    ],
     'block_newcoursecontents_get_course_details' => [
         'classname' => 'block_newcoursecontents\\external',
         'methodname' => 'get_course_details',

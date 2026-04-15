@@ -15,66 +15,49 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 <div class="block_newcoursecontents" data-region="newcoursecontents">
-    <ul class="list-group">
-    {{#courses}}
-        <li class="list-group-item course-listitem border-start-0 border-end-0 border-top-0 px-2 rounded-0"
-            data-ncc-courseid="{{{id}}}">
-            <div class="row">
-                <div class="col-md-2 d-flex align-items-center mb-sm-3 mb-md-0">
-                    <a href="{{courseurl}}" tabindex="-1" class="mw-100 w-100">
-                        <div class="rounded list-image mw-100" style='background-image: url("{{{courseimage}}}");'>
-                            <span class="visually-hidden">{{fullname}}</span>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-8 d-flex flex-column">
-                    <div class="text-muted muted d-flex flex-wrap">
-                        <span class="visually-hidden">{{#str}}aria:courseshortname, core_course {{/str}}</span>
-                        <div>{{shortname}}</div>
-                    </div>
-                    <a href="{{courseurl}}" class="aalink coursename">
-                        <span class="visually-hidden">{{#str}}aria:coursename, core_course {{/str}}</span>
-                        {{{fullname}}}
-                    </a>
-                    {{#lastvisitstr}}
-                    <div class="text-muted small">
-                        <i class="fa-regular fa-eye me-1"></i>
-                        {{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}
-                    </div>
-                    {{/lastvisitstr}}
-                    {{^lastvisitstr}}
-                    <div class="text-muted small">
-                        <i class="fa-regular fa-eye-slash me-1"></i>
-                        {{#str}} nevervisited, block_newcoursecontents {{/str}}
-                    </div>
-                    {{/lastvisitstr}}
-                    {{^visible}}
-                    <div class="d-flex flex-wrap">
-                        <span class="badge bg-info text-white">{{#str}} hiddenfromstudents {{/str}}</span>
-                    </div>
-                    {{/visible}}
-                </div>
-                <div class="col-md-2 d-flex align-items-center justify-content-end">
-                    <div class="d-flex flex-row align-items-center gap-2">
-                        {{#activitycount}}
-                        <span class="badge rounded-pill px-3 py-2" style="background-color: {{badgecolor}};">
-                            {{activitycount}} {{#str}} new, block_newcoursecontents {{/str}}
-                        </span>
-                        {{/activitycount}}
-                        <a href="{{detailurl}}" class="btn btn-sm btn-outline-primary">
-                            <i class="fa-solid fa-list me-1"></i>{{#str}} viewdetails, block_newcoursecontents {{/str}}
-                        </a>
-                    </div>
+    <div class="ncc-controls pb-3 mb-3 border-bottom">
+        <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-4">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white">
+                        <i class="fa-solid fa-search text-muted"></i>
+                    </span>
+                    <input type="text" 
+                           class="form-control ncc-search" 
+                           id="ncc-search-{{uniqid}}"
+                           placeholder="{{#str}} searchcourses, block_newcoursecontents {{/str}}" 
+                           value="{{search}}">
                 </div>
             </div>
-        </li>
-    {{/courses}}
-    </ul>
-
-    {{^courses}}
-    <div class="alert alert-info mb-0">
-        <i class="fa-regular fa-inbox me-2"></i>
-        {{#str}} nocourses, block_newcoursecontents {{/str}}
+            <div class="col-12 col-md-4">
+                <select class="form-select form-select-sm ncc-sort" id="ncc-sort-{{uniqid}}">
+                    <option value="lastaccessed" {{#issortlastaccessed}}selected{{/issortlastaccessed}}>
+                        {{#str}} sortbylastaccessed, block_newcoursecontents {{/str}}
+                    </option>
+                    <option value="title" {{#issorttitle}}selected{{/issorttitle}}>
+                        {{#str}} sortbytitle, block_newcoursecontents {{/str}}
+                    </option>
+                    <option value="shortname" {{#issortshortname}}selected{{/issortshortname}}>
+                        {{#str}} sortbyshortname, block_newcoursecontents {{/str}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="btn-group btn-group-sm float-end" role="group">
+                    <input type="radio" class="btn-check ncc-view" name="ncc-view-{{uniqid}}" id="ncc-view-card-{{uniqid}}" value="card" {{#isviewcard}}checked{{/isviewcard}}>
+                    <label class="btn btn-outline-secondary" for="ncc-view-card-{{uniqid}}" title="{{#str}} viewcard, block_newcoursecontents {{/str}}">
+                        <i class="fa-solid fa-grip"></i>
+                    </label>
+                    <input type="radio" class="btn-check ncc-view" name="ncc-view-{{uniqid}}" id="ncc-view-list-{{uniqid}}" value="list" {{#isviewlist}}checked{{/isviewlist}}>
+                    <label class="btn btn-outline-secondary" for="ncc-view-list-{{uniqid}}" title="{{#str}} viewlist, block_newcoursecontents {{/str}}">
+                        <i class="fa-solid fa-list"></i>
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
-    {{/courses}}
+    
+    <div class="ncc-course-list" id="ncc-course-list-{{uniqid}}">
+        {{> block_newcoursecontents/course_list }}
+    </div>
 </div>

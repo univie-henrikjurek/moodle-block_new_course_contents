@@ -68,21 +68,16 @@ $PAGE->requires->js_amd_inline("
             var activityItem = button.closest('.activity-item');
             var cmid = button.data('cmid');
             
-            console.log('Mark as seen clicked for cmid:', cmid);
-            
             button.prop('disabled', true).html('<i class=\"fa-solid fa-spinner fa-spin me-1\"></i>...');
             
-            var request = Ajax.call([{
+            Ajax.call([{
                 methodname: 'block_newcoursecontents_mark_activity_seen',
                 args: {cmid: parseInt(cmid)},
-                done: function(response) {
-                    console.log('Success:', response);
+                done: function() {
                     activityItem.fadeOut(300, function() {
                         $(this).remove();
                         
                         var remaining = $('.activity-item');
-                        console.log('Remaining activities:', remaining.length);
-                        
                         if (remaining.length === 0) {
                             var emptyMsg = $('<div class=\"alert alert-success\">' +
                                 '<i class=\"fa-regular fa-check-circle me-2\"></i>' +
@@ -93,36 +88,11 @@ $PAGE->requires->js_amd_inline("
                         }
                     });
                 },
-                fail: function(error) {
-                    console.error('Error:', error);
+                fail: function() {
                     button.prop('disabled', false).html('<i class=\"fa-regular fa-check me-1\"></i>' + 
                         M.util.get_string('markasseen', 'block_newcoursecontents'));
                 }
             }]);
-            
-            // Also handle the promise directly in case done/fail don't work
-            if (request && request[0]) {
-                request[0].done(function(response) {
-                    console.log('Promise done:', response);
-                    activityItem.fadeOut(300, function() {
-                        $(this).remove();
-                        
-                        var remaining = $('.activity-item');
-                        if (remaining.length === 0) {
-                            var emptyMsg = $('<div class=\"alert alert-success\">' +
-                                '<i class=\"fa-regular fa-check-circle me-2\"></i>' +
-                                M.util.get_string('nochanges', 'block_newcoursecontents') +
-                                '</div>');
-                            $('.activity-list').html(emptyMsg);
-                            $('.mark-all-form').hide();
-                        }
-                    });
-                }).fail(function(error) {
-                    console.error('Promise fail:', error);
-                    button.prop('disabled', false).html('<i class=\"fa-regular fa-check me-1\"></i>' + 
-                        M.util.get_string('markasseen', 'block_newcoursecontents'));
-                });
-            }
         });
     });
 ");

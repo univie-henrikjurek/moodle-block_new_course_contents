@@ -95,3 +95,10 @@ $string['privacy:metadata:lastseen'] = 'The timestamp of your last visit to a sp
 
 $string['loading'] = 'Loading...';
 $string['errorloading'] = 'Error loading course details';
+
+$string['searchcourses'] = 'Search courses...';
+$string['sortbylastaccessed'] = 'Sort by activity';
+$string['sortbytitle'] = 'Sort by name';
+$string['sortbyshortname'] = 'Sort by shortname';
+$string['viewcard'] = 'Card view';
+$string['viewlist'] = 'List view';

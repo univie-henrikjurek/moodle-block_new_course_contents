@@ -61,10 +61,18 @@ class manager {
      * Get all courses with new activities for a user.
      *
      * @param int $userid User ID
+     * @param string $sort Sort order: 'title', 'shortname', or 'lastaccessed'
+     * @param string $search Search term for filtering courses
      * @return array Array of course data with activity counts
      */
-    public static function get_courses_with_activities($userid) {
+    public static function get_courses_with_activities($userid, $sort = 'lastaccessed', $search = '') {
         global $DB, $PAGE;
+        
+        $cachekey = "{$userid}_{$sort}_{$search}";
+        $cached = self::get_cache()->get($cachekey);
+        if ($cached !== false) {
+            return $cached;
+        }
         
         $customlastaccess = $DB->get_records('block_newcoursecontents_lastseen', ['userid' => $userid], '', 'courseid, lastseen');
         $lastseens = [];
@@ -78,6 +86,18 @@ class manager {
             $courses = \get_user_courses($userid);
         }
         
+        if (empty($courses)) {
+            return [];
+        }
+
+        if (!empty($search)) {
+            $searchlower = strtolower($search);
+            $courses = array_filter($courses, function($course) use ($searchlower) {
+                return stripos($course->fullname, $searchlower) !== false 
+                    || stripos($course->shortname, $searchlower) !== false;
+            });
+        }
+
         if (empty($courses)) {
             return [];
         }
@@ -133,9 +153,17 @@ class manager {
             ];
         }
 
-        usort($result, function($a, $b) {
-            return $b['activitycount'] - $a['activitycount'];
+        usort($result, function($a, $b) use ($sort) {
+            if ($sort === 'title') {
+                return strcasecmp($a['fullname'], $b['fullname']);
+            } else if ($sort === 'shortname') {
+                return strcasecmp($a['shortname_raw'], $b['shortname_raw']);
+            } else {
+                return $b['activitycount'] - $a['activitycount'];
+            }
         });
+
+        self::get_cache()->set($cachekey, $result);
 
         return $result;
     }
