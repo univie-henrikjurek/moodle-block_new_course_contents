@@ -70,6 +70,7 @@ const fetchCourses = (filters, inputValue = '') => {
     const args = {
         grouping: filters.grouping || 'all',
         sort: filters.sort || 'lastaccessed',
+        view: filters.display || 'card',
     };
 
     if (inputValue) {
