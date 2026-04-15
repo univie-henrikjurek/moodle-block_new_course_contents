@@ -36,8 +36,8 @@
                 <p class="card-text text-muted small mb-0">{{{shortname}}}</p>
                 {{/shortname}}
             </div>
-            <div class="card-footer bg-white d-flex align-items-center justify-content-between">
-                <div>
+            <div class="card-footer bg-white d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                <div class="d-flex align-items-center gap-2">
                     {{#activitycount}}
                     <span class="badge rounded-pill" style="background-color: {{badgecolor}};">
                         {{activitycount}} {{#str}} new, block_newcoursecontents {{/str}}
@@ -48,20 +48,18 @@
                         0 {{#str}} new, block_newcoursecontents {{/str}}
                     </span>
                     {{/activitycount}}
+                    {{#lastvisitstr}}
+                    <small class="text-muted" title="{{#str}} lastvisit, block_newcoursecontents {{/str}}">
+                        <i class="fa-regular fa-eye me-1"></i>{{lastvisitstr}}
+                    </small>
+                    {{/lastvisitstr}}
+                    {{^lastvisitstr}}
+                    <small class="text-muted">
+                        <i class="fa-regular fa-eye-slash me-1"></i>{{#str}} nevervisited, block_newcoursecontents {{/str}}
+                    </small>
+                    {{/lastvisitstr}}
                 </div>
-                {{#lastvisitstr}}
-                <small class="text-muted" title="{{#str}} lastvisit, block_newcoursecontents {{/str}}">
-                    <i class="fa-regular fa-eye me-1"></i>{{lastvisitstr}}
-                </small>
-                {{/lastvisitstr}}
-                {{^lastvisitstr}}
-                <small class="text-muted">
-                    <i class="fa-regular fa-eye-slash me-1"></i>{{#str}} nevervisited, block_newcoursecontents {{/str}}
-                </small>
-                {{/lastvisitstr}}
-            </div>
-            <div class="card-footer bg-white pt-0">
-                <a href="{{detailurl}}" class="btn btn-sm btn-outline-primary w-100">
+                <a href="{{detailurl}}" class="btn btn-sm btn-outline-primary">
                     <i class="fa-solid fa-list me-1"></i>{{#str}} viewdetails, block_newcoursecontents {{/str}}
                 </a>
             </div>
