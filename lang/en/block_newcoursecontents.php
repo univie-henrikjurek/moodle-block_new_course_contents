@@ -124,3 +124,4 @@ $string['aria:viewchanges'] = 'View changes in {$a}';
 $string['aria:nevervisited'] = 'Never visited this course';
 $string['aria:lastvisited'] = 'Last visited {$a}';
 $string['aria:courselist'] = 'Course list with {$a} courses';
+$string['aria:clearsearch'] = 'Clear search';

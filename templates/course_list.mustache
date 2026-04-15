@@ -37,13 +37,13 @@
                 </a>
                 {{#lastvisitstr}}
                 <div class="text-muted small">
-                    <i class="fa-regular fa-eye me-1"></i>
+                    <i class="fa-regular fa-eye me-1" aria-hidden="true"></i>
                     {{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}
                 </div>
                 {{/lastvisitstr}}
                 {{^lastvisitstr}}
                 <div class="text-muted small">
-                    <i class="fa-regular fa-eye-slash me-1"></i>
+                    <i class="fa-regular fa-eye-slash me-1" aria-hidden="true"></i>
                     {{#str}} nevervisited, block_newcoursecontents {{/str}}
                 </div>
                 {{/lastvisitstr}}
@@ -61,7 +61,7 @@
                     </span>
                     {{/activitycount}}
                     <a href="{{detailurl}}" class="btn btn-sm btn-outline-primary">
-                        <i class="fa-solid fa-list me-1"></i>{{#str}} viewdetails, block_newcoursecontents {{/str}}
+                        <i class="fa-solid fa-list me-1" aria-hidden="true"></i>{{#str}} viewdetails, block_newcoursecontents {{/str}}
                     </a>
                 </div>
             </div>
@@ -72,7 +72,7 @@
 
 {{^courses}}
 <div class="alert alert-info mb-0">
-    <i class="fa-regular fa-inbox me-2"></i>
+    <i class="fa-regular fa-inbox me-2" aria-hidden="true"></i>
     {{#str}} nocourses, block_newcoursecontents {{/str}}
 </div>
 {{/courses}}

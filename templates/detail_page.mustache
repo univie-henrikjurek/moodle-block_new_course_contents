@@ -22,12 +22,12 @@
                     <a href="{{{courseurl}}}" class="text-decoration-none">{{coursename}}</a>
                 </h2>
                 <p class="text-muted mb-0">
-                    <i class="fa-regular fa-eye me-1"></i>
+                    <i class="fa-regular fa-eye me-1" aria-hidden="true"></i>
                     {{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}
                 </p>
             </div>
             <a href="{{{courseurl}}}" class="btn btn-sm" style="background-color: {{badgecolor}}; color: white;">
-                <i class="fa-solid fa-graduation-cap me-1"></i>{{#str}} gotocoursebutton, block_newcoursecontents {{/str}}
+                <i class="fa-solid fa-graduation-cap me-1" aria-hidden="true"></i>{{#str}} gotocoursebutton, block_newcoursecontents {{/str}}
             </a>
         </div>
     </div>
@@ -36,7 +36,7 @@
     {{#activities}}
     <div class="activity-item mb-3 p-3 border rounded shadow-sm">
         <div class="d-flex align-items-start">
-            <div class="activity-icon me-3 mt-1">
+            <div class="activity-icon me-3 mt-1" aria-hidden="true">
                 {{#pix}}{{iconname}}, core, {{typename}}{{/pix}}
                 <span class="activity-icon-fallback d-none">{{typename}}</span>
             </div>
@@ -48,23 +48,23 @@
                     <span class="badge bg-secondary me-2">{{type}}</span>
                     {{#isnew}}
                     <span class="badge bg-success me-2">
-                        <i class="fa-solid fa-star me-1"></i>{{#str}} new, block_newcoursecontents {{/str}}
+                        <i class="fa-solid fa-star me-1" aria-hidden="true"></i>{{#str}} new, block_newcoursecontents {{/str}}
                     </span>
                     {{/isnew}}
                     {{#wasmodified}}
                     <span class="badge bg-warning text-dark me-2">
-                        <i class="fa-solid fa-pencil me-1"></i>{{#str}} modified, block_newcoursecontents {{/str}}
+                        <i class="fa-solid fa-pencil me-1" aria-hidden="true"></i>{{#str}} modified, block_newcoursecontents {{/str}}
                     </span>
                     {{/wasmodified}}
                 </div>
                 <div class="activity-dates small">
                     <div class="text-muted">
-                        <i class="fa-regular fa-calendar-plus me-1"></i>
+                        <i class="fa-regular fa-calendar-plus me-1" aria-hidden="true"></i>
                         {{#str}} added, block_newcoursecontents {{/str}}: {{timeaddedstr}}
                     </div>
                     {{#timemodifiedstr}}
                     <div class="text-muted mt-1">
-                        <i class="fa-regular fa-calendar-check me-1"></i>
+                        <i class="fa-regular fa-calendar-check me-1" aria-hidden="true"></i>
                         {{#str}} modified, block_newcoursecontents {{/str}}: {{timemodifiedstr}}
                     </div>
                     {{/timemodifiedstr}}
@@ -72,10 +72,10 @@
             </div>
             <div class="activity-actions ms-3 d-flex flex-column gap-2">
                 <a href="{{{url}}}" class="btn btn-sm btn-primary">
-                    <i class="fa-solid fa-arrow-right me-1"></i>{{#str}} open, block_newcoursecontents {{/str}}
+                    <i class="fa-solid fa-arrow-right me-1" aria-hidden="true"></i>{{#str}} open, block_newcoursecontents {{/str}}
                 </a>
                 <button type="button" class="btn btn-sm btn-outline-secondary ncc-mark-single" data-cmid="{{cmid}}" data-courseid="{{{courseid}}}">
-                    <i class="fa-regular fa-check me-1"></i>{{#str}} markasseen, block_newcoursecontents {{/str}}
+                    <i class="fa-regular fa-check me-1" aria-hidden="true"></i>{{#str}} markasseen, block_newcoursecontents {{/str}}
                 </button>
             </div>
         </div>
@@ -85,7 +85,7 @@
 
     {{^activities}}
     <div class="alert alert-success">
-        <i class="fa-regular fa-check-circle me-2"></i>
+        <i class="fa-regular fa-check-circle me-2" aria-hidden="true"></i>
         {{#str}} nochanges, block_newcoursecontents {{/str}}
     </div>
     {{/activities}}
@@ -96,12 +96,12 @@
             <input type="hidden" name="courseid" value="{{courseid}}">
             <input type="hidden" name="markseen" value="1">
             <button type="submit" class="btn btn-success">
-                <i class="fa-solid fa-check-double me-2"></i>{{#str}} markallseen, block_newcoursecontents {{/str}}
+                <i class="fa-solid fa-check-double me-2" aria-hidden="true"></i>{{#str}} markallseen, block_newcoursecontents {{/str}}
             </button>
         </form>
         {{/hasactivities}}
         <a href="{{{dashboardurl}}}" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-house me-2"></i>{{#str}} gotodashboard, block_newcoursecontents {{/str}}
+            <i class="fa-solid fa-house me-2" aria-hidden="true"></i>{{#str}} gotodashboard, block_newcoursecontents {{/str}}
         </a>
     </div>
 </div>
