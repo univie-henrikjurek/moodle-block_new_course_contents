@@ -30,13 +30,13 @@
             </a>
             <div class="card-body">
                 <a href="{{viewurl}}" class="text-decoration-none text-dark">
-                    <h6 class="card-title">{{{fullname}}}</h6>
+                    <h6 class="card-title mb-1">{{{fullname}}}</h6>
                 </a>
                 {{#shortname}}
-                <p class="card-text text-muted small">{{{shortname}}}</p>
+                <p class="card-text text-muted small mb-0">{{{shortname}}}</p>
                 {{/shortname}}
             </div>
-            <div class="card-footer bg-white d-flex align-items-center justify-content-between">
+            <div class="card-footer bg-white d-flex align-items-center justify-content-between border-top-0">
                 <div>
                     {{#activitycount}}
                     <span class="badge rounded-pill" style="background-color: {{badgecolor}};">
@@ -59,11 +59,6 @@
                     <i class="fa-regular fa-eye-slash me-1"></i>{{#str}} nevervisited, block_newcoursecontents {{/str}}
                 </small>
                 {{/lastvisitstr}}
-            </div>
-            <div class="card-footer bg-white pt-0 border-top-0">
-                <a href="{{detailurl}}" class="btn btn-sm btn-outline-primary w-100">
-                    <i class="fa-solid fa-list me-1"></i>{{#str}} viewdetails, block_newcoursecontents {{/str}}
-                </a>
             </div>
         </div>
     </div>
