@@ -113,22 +113,5 @@ const registerFilterEvents = (root) => {
 
 export const init = root => {
     root = $(root);
-    
-    // Check localStorage for saved view preference
-    const savedView = localStorage.getItem(STORAGE_KEY);
-    if (savedView) {
-        const courseRegion = root.find(SELECTORS.courseView.region);
-        if (courseRegion.length > 0) {
-            const currentView = courseRegion.attr('data-display');
-            if (currentView !== savedView) {
-                courseRegion.attr('data-display', savedView);
-                // Update the radio buttons
-                root.find('[name="display"][value="' + savedView + '"]').prop('checked', true);
-                // Render with new view
-                View.reset(root);
-            }
-        }
-    }
-    
     registerFilterEvents(root);
 };

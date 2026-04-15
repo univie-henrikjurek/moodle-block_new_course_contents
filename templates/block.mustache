@@ -19,7 +19,20 @@
 
     This template renders the block with filter controls.
 }}
-<div id="block-newcoursecontents-{{uniqid}}" class="block-newcoursecontents" data-region="newcoursecontents">
+{{#js}}
+// Inline script to set view preference before page render - prevents flash of wrong content
+(function() {
+    var key = 'block_newcoursecontents_view';
+    var saved = localStorage.getItem(key);
+    if (saved) {
+        var el = document.querySelector('[data-region="courses-view"]');
+        if (el) {
+            el.setAttribute('data-display', saved);
+        }
+    }
+})();
+{{/js}}
+<div id="block-newcoursecontents-{{uniqid}}" class="block-newcoursecontents" data-region="newcoursecontents" data-initial-view="{{view}}">
     <div data-region="filter" class="d-flex align-items-center my-2" aria-label="{{#str}} aria:controls, block_newcoursecontents {{/str}}">
         <div class="d-flex flex-wrap gap-1 align-items-center w-100">
             {{> block_newcoursecontents/nav-grouping-selector }}
