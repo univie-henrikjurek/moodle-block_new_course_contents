@@ -22,24 +22,8 @@
 
 import $ from 'jquery';
 import * as CustomEvents from 'core/custom_interaction_events';
-import Notification from 'core/notification';
-import {setUserPreference} from 'core_user/repository';
 import * as View from 'block_newcoursecontents/view';
 import SELECTORS from 'block_newcoursecontents/selectors';
-
-const updatePreferences = (filter, value) => {
-    let type = null;
-    if (filter === 'display') {
-        type = 'block_newcoursecontents_user_view_preference';
-    } else if (filter === 'sort') {
-        type = 'block_newcoursecontents_user_sort_preference';
-    } else {
-        type = 'block_newcoursecontents_user_grouping_preference';
-    }
-
-    return setUserPreference(type, value)
-        .catch(Notification.exception);
-};
 
 const registerFilterEvents = (root) => {
     const filterRegion = root.find(SELECTORS.FILTERS);
@@ -56,7 +40,6 @@ const registerFilterEvents = (root) => {
             const option = $(e.target);
             const filterType = option.attr('data-filter');
             const value = option.attr('data-value');
-            const pref = option.attr('data-pref');
 
             if (option.hasClass('active')) {
                 return;
@@ -70,8 +53,6 @@ const registerFilterEvents = (root) => {
             if (filterType === 'display') {
                 root.find('[name="display"][value="' + value + '"]').prop('checked', true);
             }
-
-            updatePreferences(filterType, pref);
 
             const page = document.querySelector(SELECTORS.region.selectBlock);
             if (page) {
@@ -102,7 +83,6 @@ const registerDisplayToggle = (root) => {
             courseRegion.attr('data-display', value);
         }
 
-        updatePreferences('display', value);
         View.reset(root);
     });
 };
