@@ -100,8 +100,10 @@ const registerFilterEvents = (root) => {
 
 const registerDisplayToggle = (root) => {
     const displayBtns = root.find('[name="display"]');
+    console.log('registerDisplayToggle - buttons found:', displayBtns.length);
 
-    displayBtns.on('change', (e) => {
+    // Use both click and change events for Bootstrap btn-check
+    displayBtns.on('click change', (e) => {
         const value = $(e.target).val();
         const courseRegion = root.find(SELECTORS.courseView.region);
         console.log('Display toggle - value:', value);
@@ -128,6 +130,16 @@ const registerDisplayToggle = (root) => {
 
 export const init = root => {
     root = $(root);
+    console.log('view_nav init called');
     registerFilterEvents(root);
     registerDisplayToggle(root);
+    
+    // Debug: Check if display buttons exist
+    const displayBtns = root.find('[name="display"]');
+    console.log('Display buttons found:', displayBtns.length);
+    if (displayBtns.length > 0) {
+        displayBtns.on('click', (e) => {
+            console.log('Display button clicked!');
+        });
+    }
 };
