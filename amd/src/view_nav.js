@@ -112,10 +112,12 @@ const registerDisplayToggle = (root) => {
         // First update UI immediately
         View.reset(root);
 
-        // Then save preference and reload on success
+        // Then save preference and reload after short delay
         saveUserPreference('display', value)
             .then(() => {
-                window.location.reload();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
             })
             .catch((err) => {
                 console.error('Error saving view preference:', err);
