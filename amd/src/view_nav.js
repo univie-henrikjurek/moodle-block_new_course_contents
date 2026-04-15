@@ -42,8 +42,7 @@ const saveUserPreference = (filter, value) => {
         methodname: 'core_user_update_user_preferences',
         args: {
             preferences: [{
-                type: 'text',
-                name: prefName,
+                type: prefName,
                 value: value
             }]
         }
