@@ -72,10 +72,19 @@ const registerFilterEvents = (root) => {
             const courseRegion = root.find(SELECTORS.courseView.region);
             if (courseRegion.length > 0) {
                 courseRegion.attr('data-' + filterType, value);
+                console.log('Filter changed:', filterType, value);
+                console.log('data-display now:', courseRegion.attr('data-display'));
             }
 
             if (filterType === 'display') {
                 root.find('[name="display"][value="' + value + '"]').prop('checked', true);
+                // For display changes, just reload to pick up the new preference
+                saveUserPreference(filterType, value).then(() => {
+                    console.log('Preference saved, reloading...');
+                    window.location.reload();
+                });
+                data.originalEvent.preventDefault();
+                return;
             }
 
             saveUserPreference(filterType, value);
@@ -98,48 +107,7 @@ const registerFilterEvents = (root) => {
     );
 };
 
-const registerDisplayToggle = (root) => {
-    const displayBtns = root.find('[name="display"]');
-    console.log('registerDisplayToggle - buttons found:', displayBtns.length);
-
-    // Use both click and change events for Bootstrap btn-check
-    displayBtns.on('click change', (e) => {
-        const value = $(e.target).val();
-        const courseRegion = root.find(SELECTORS.courseView.region);
-        console.log('Display toggle - value:', value);
-        console.log('Display toggle - courseRegion:', courseRegion.length);
-
-        if (courseRegion.length > 0) {
-            courseRegion.attr('data-display', value);
-            console.log('Display toggle - data-display set to:', courseRegion.attr('data-display'));
-        }
-
-        // Update UI immediately
-        View.reset(root);
-
-        // Save preference (no reload - preference will persist on next page load)
-        saveUserPreference('display', value)
-            .then(() => {
-                console.log('View preference saved:', value);
-            })
-            .catch((err) => {
-                console.error('Error saving view preference:', err);
-            });
-    });
-};
-
 export const init = root => {
     root = $(root);
-    console.log('view_nav init called');
     registerFilterEvents(root);
-    registerDisplayToggle(root);
-    
-    // Debug: Check if display buttons exist
-    const displayBtns = root.find('[name="display"]');
-    console.log('Display buttons found:', displayBtns.length);
-    if (displayBtns.length > 0) {
-        displayBtns.on('click', (e) => {
-            console.log('Display button clicked!');
-        });
-    }
 };
