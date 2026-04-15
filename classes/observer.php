@@ -49,4 +49,24 @@ class observer {
             // Silently fail - activity tracking is not critical
         }
     }
+
+    /**
+     * Update last seen timestamp when user views a course.
+     *
+     * @param \core\event\course_viewed $event
+     */
+    public static function course_viewed($event) {
+        $courseid = $event->courseid;
+        $userid = $event->userid;
+
+        if (!$courseid || !$userid) {
+            return;
+        }
+
+        try {
+            manager::update_lastseen($userid, $courseid);
+        } catch (\Exception $e) {
+            // Silently fail - activity tracking is not critical
+        }
+    }
 }

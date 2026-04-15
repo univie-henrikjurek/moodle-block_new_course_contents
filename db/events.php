@@ -30,4 +30,9 @@ $handlers = [
         'handlerfunction' => ['block_newcoursecontents\\observer', 'course_module_viewed'],
         'internal' => false,
     ],
+    'course_viewed' => [
+        'handlerfile' => '/blocks/newcoursecontents/classes/observer.php',
+        'handlerfunction' => ['block_newcoursecontents\\observer', 'course_viewed'],
+        'internal' => false,
+    ],
 ];
