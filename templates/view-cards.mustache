@@ -19,7 +19,7 @@
 
     This template renders the cards view for the newcoursecontents block.
 }}
-<div class="card-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 mx-0">
+<div class="card-deck row row-cols-1 row-cols-sm-2 row-cols-md-3 mx-0">
     {{#courses}}
     <div class="col p-2">
         <div class="card h-100" data-region="course-content" data-course-id="{{{id}}}">
@@ -37,16 +37,33 @@
                 {{/shortname}}
             </div>
             <div class="card-footer bg-white d-flex align-items-center justify-content-between">
-                {{#activitycount}}
-                <span class="badge rounded-pill" style="background-color: {{badgecolor}};">
-                    {{activitycount}} {{#str}} new, block_newcoursecontents {{/str}}
-                </span>
-                {{/activitycount}}
+                <div>
+                    {{#activitycount}}
+                    <span class="badge rounded-pill" style="background-color: {{badgecolor}};">
+                        {{activitycount}} {{#str}} new, block_newcoursecontents {{/str}}
+                    </span>
+                    {{/activitycount}}
+                    {{^activitycount}}
+                    <span class="badge rounded-pill bg-secondary">
+                        0 {{#str}} new, block_newcoursecontents {{/str}}
+                    </span>
+                    {{/activitycount}}
+                </div>
                 {{#lastvisitstr}}
-                <small class="text-muted">
+                <small class="text-muted" title="{{#str}} lastvisit, block_newcoursecontents {{/str}}">
                     <i class="fa-regular fa-eye me-1"></i>{{lastvisitstr}}
                 </small>
                 {{/lastvisitstr}}
+                {{^lastvisitstr}}
+                <small class="text-muted">
+                    <i class="fa-regular fa-eye-slash me-1"></i>{{#str}} nevervisited, block_newcoursecontents {{/str}}
+                </small>
+                {{/lastvisitstr}}
+            </div>
+            <div class="card-footer bg-white pt-0 border-top-0">
+                <a href="{{detailurl}}" class="btn btn-sm btn-outline-primary w-100">
+                    <i class="fa-solid fa-list me-1"></i>{{#str}} viewdetails, block_newcoursecontents {{/str}}
+                </a>
             </div>
         </div>
     </div>

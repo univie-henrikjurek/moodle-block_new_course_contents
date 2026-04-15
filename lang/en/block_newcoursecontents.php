@@ -111,6 +111,7 @@ $string['past'] = 'Past';
 $string['favourites'] = 'Starred';
 
 $string['aria:groupingdropdown'] = 'Course grouping selector';
+$string['aria:sortingdropdown'] = 'Course sorting selector';
 $string['aria:allcoursesincludinghidden'] = 'Show all courses including hidden';
 $string['aria:allcourses'] = 'Show all courses';
 $string['aria:inprogress'] = 'Show in-progress courses';

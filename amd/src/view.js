@@ -68,12 +68,12 @@ const renderCourses = (root, courses) => {
 
 const fetchCourses = (filters, inputValue = '') => {
     const args = {
-        classification: filters.grouping || 'all',
+        grouping: filters.grouping || 'all',
         sort: filters.sort || 'lastaccessed',
     };
 
     if (inputValue) {
-        args.searchvalue = inputValue;
+        args.search = inputValue;
     }
 
     return Repository.getCourses(args);

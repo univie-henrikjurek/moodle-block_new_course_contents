@@ -22,51 +22,67 @@
 
 import $ from 'jquery';
 import * as CustomEvents from 'core/custom_interaction_events';
-import Notification from 'core/notification';
-import {setUserPreference} from 'core_user/repository';
+import * as Notification from 'core/notification';
 import * as View from 'block_newcoursecontents/view';
 import SELECTORS from 'block_newcoursecontents/selectors';
 
-const updatePreferences = (filter, value) => {
-    let type = null;
-    if (filter === 'display') {
-        type = 'block_newcoursecontents_user_view_preference';
-    } else if (filter === 'sort') {
-        type = 'block_newcoursecontents_user_sort_preference';
-    } else {
-        type = 'block_newcoursecontents_user_grouping_preference';
-    }
-
-    return setUserPreference(type, value)
-        .catch(Notification.exception);
+const savePreference = (type, value) => {
+    const url = '/r.php/api/rest/v2/user/current/preferences/' + type;
+    return $.ajax(url, {
+        type: 'POST',
+        data: {
+            value: value
+        }
+    }).fail(Notification.exception);
 };
 
-const registerSelector = root => {
-    const Selector = root.find(SELECTORS.FILTERS);
+const registerFilterEvents = (root) => {
+    const filterRegion = root.find(SELECTORS.FILTERS);
+    if (filterRegion.length === 0) {
+        return;
+    }
 
-    CustomEvents.define(Selector, [CustomEvents.events.activate]);
+    CustomEvents.define(filterRegion, [CustomEvents.events.activate]);
 
-    Selector.on(
+    filterRegion.on(
         CustomEvents.events.activate,
         SELECTORS.FILTER_OPTION,
         (e, data) => {
             const option = $(e.target);
+            const filterType = option.attr('data-filter');
+            const value = option.attr('data-value');
+            const prefName = option.attr('data-pref');
 
             if (option.hasClass('active')) {
                 return;
             }
 
-            const filter = option.attr('data-filter');
-            const pref = option.attr('data-pref');
+            const courseRegion = root.find(SELECTORS.courseView.region);
+            if (courseRegion.length > 0) {
+                courseRegion.attr('data-' + filterType, value);
+            }
 
-            root.find(SELECTORS.courseView.region).attr('data-' + filter, option.attr('data-value'));
-            updatePreferences(filter, pref);
+            if (filterType === 'display') {
+                root.find('[name="display"][value="' + value + '"]').prop('checked', true);
+            }
+
+            const prefType = filterType === 'display'
+                ? 'block_newcoursecontents_user_view_preference'
+                : filterType === 'sort'
+                    ? 'block_newcoursecontents_user_sort_preference'
+                    : 'block_newcoursecontents_user_grouping_preference';
+
+            savePreference(prefType, prefName);
 
             const page = document.querySelector(SELECTORS.region.selectBlock);
-            const input = page.querySelector(SELECTORS.region.searchInput);
-            if (input.value !== '') {
-                input.value = '';
-                View.clearSearch(root);
+            if (page) {
+                const input = page.querySelector(SELECTORS.region.searchInput);
+                if (input && input.value !== '') {
+                    input.value = '';
+                    View.clearSearch(root);
+                } else {
+                    View.init(root);
+                }
             } else {
                 View.init(root);
             }
@@ -74,29 +90,26 @@ const registerSelector = root => {
             data.originalEvent.preventDefault();
         }
     );
+};
 
-    Selector.on(
-        CustomEvents.events.activate,
-        SELECTORS.DISPLAY_OPTION,
-        (e, data) => {
-            const option = $(e.target);
+const registerDisplayToggle = (root) => {
+    const displayBtns = root.find('[name="display"]');
 
-            if (option.hasClass('active')) {
-                return;
-            }
+    displayBtns.on('change', (e) => {
+        const value = $(e.target).val();
+        const courseRegion = root.find(SELECTORS.courseView.region);
 
-            const filter = option.attr('data-display-option');
-            const pref = option.attr('data-pref');
-
-            root.find(SELECTORS.courseView.region).attr('data-display', option.attr('data-value'));
-            updatePreferences(filter, pref);
-            View.reset(root);
-            data.originalEvent.preventDefault();
+        if (courseRegion.length > 0) {
+            courseRegion.attr('data-display', value);
         }
-    );
+
+        savePreference('block_newcoursecontents_user_view_preference', value);
+        View.reset(root);
+    });
 };
 
 export const init = root => {
     root = $(root);
-    registerSelector(root);
+    registerFilterEvents(root);
+    registerDisplayToggle(root);
 };

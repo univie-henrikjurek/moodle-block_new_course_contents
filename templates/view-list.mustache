@@ -47,6 +47,12 @@
                     {{#str}} lastvisit, block_newcoursecontents {{/str}}: {{lastvisitstr}}
                 </div>
                 {{/lastvisitstr}}
+                {{^lastvisitstr}}
+                <div class="text-muted small">
+                    <i class="fa-regular fa-eye-slash me-1"></i>
+                    {{#str}} nevervisited, block_newcoursecontents {{/str}}
+                </div>
+                {{/lastvisitstr}}
                 {{^visible}}
                 <div class="d-flex flex-wrap">
                     <span class="badge bg-info text-white">{{#str}} hiddenfromstudents {{/str}}</span>
