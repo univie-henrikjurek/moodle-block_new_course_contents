@@ -109,8 +109,9 @@ const registerDisplayToggle = (root) => {
             courseRegion.attr('data-display', value);
         }
 
-        saveUserPreference('display', value);
-        View.reset(root);
+        saveUserPreference('display', value).then(() => {
+            window.location.reload();
+        });
     });
 };
 
