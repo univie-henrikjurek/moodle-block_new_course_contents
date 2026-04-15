@@ -104,9 +104,12 @@ const registerDisplayToggle = (root) => {
     displayBtns.on('change', (e) => {
         const value = $(e.target).val();
         const courseRegion = root.find(SELECTORS.courseView.region);
+        console.log('Display toggle - value:', value);
+        console.log('Display toggle - courseRegion:', courseRegion.length);
 
         if (courseRegion.length > 0) {
             courseRegion.attr('data-display', value);
+            console.log('Display toggle - data-display set to:', courseRegion.attr('data-display'));
         }
 
         // Update UI immediately

@@ -46,7 +46,9 @@ const getFilterValues = root => {
 
 const renderCourses = (root, courses) => {
     const filters = getFilterValues(root);
+    console.log('renderCourses - filters.display:', filters.display);
     let templateName = filters.display === 'list' ? TEMPLATES.COURSES_LIST : TEMPLATES.COURSES_CARDS;
+    console.log('renderCourses - templateName:', templateName);
 
     if (!courses || courses.length === 0) {
         return Templates.render('block_newcoursecontents/no-courses', {
