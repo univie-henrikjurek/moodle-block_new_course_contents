@@ -109,15 +109,13 @@ const registerDisplayToggle = (root) => {
             courseRegion.attr('data-display', value);
         }
 
-        // First update UI immediately
+        // Update UI immediately
         View.reset(root);
 
-        // Then save preference and reload after short delay
+        // Save preference (no reload - preference will persist on next page load)
         saveUserPreference('display', value)
             .then(() => {
-                setTimeout(() => {
-                    window.location.reload();
-                }, 100);
+                console.log('View preference saved:', value);
             })
             .catch((err) => {
                 console.error('Error saving view preference:', err);
