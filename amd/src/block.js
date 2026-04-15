@@ -16,15 +16,12 @@
 /**
  * JavaScript for block_newcoursecontents.
  *
- * @package   block_newcoursecontents
  * @copyright 2026 Your Name <your@email.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 import {call as fetchMany} from 'core/ajax';
-import {get_string as getString} from 'core/str';
 import Templates from 'core/templates';
-import Notification from 'core/notification';
 
 /**
  * Register event listeners for the block.

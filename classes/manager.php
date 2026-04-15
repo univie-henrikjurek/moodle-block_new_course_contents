@@ -64,12 +64,12 @@ class manager {
      * @return array Array of course data with activity counts
      */
     public static function get_courses_with_activities($userid) {
-        global $DB;
+        global $DB, $PAGE;
         
-        $moodlelastaccess = $DB->get_records('user_lastaccess', ['userid' => $userid], '', 'courseid, timeaccess');
+        $customlastaccess = $DB->get_records('block_newcoursecontents_lastseen', ['userid' => $userid], '', 'courseid, lastseen');
         $lastseens = [];
-        foreach ($moodlelastaccess as $record) {
-            $lastseens[$record->courseid] = $record->timeaccess;
+        foreach ($customlastaccess as $record) {
+            $lastseens[$record->courseid] = $record->lastseen;
         }
         
         $courses = \enrol_get_my_courses(['id', 'fullname', 'shortname', 'summary', 'timecreated', 'visible', 'idnumber', 'category'], null, 0, false);
@@ -82,6 +82,28 @@ class manager {
             return [];
         }
 
+        $courseimgs = [];
+        $output = $PAGE->get_renderer('core');
+        
+        foreach ($courses as $course) {
+            $file = \course_get_courseimage($course);
+            if ($file) {
+                $url = \moodle_url::make_pluginfile_url(
+                    $file->get_contextid(),
+                    $file->get_component(),
+                    $file->get_filearea(),
+                    $file->get_itemid(),
+                    $file->get_filepath(),
+                    $file->get_filename()
+                );
+                $courseimgs[$course->id] = $url->out(false);
+            } else {
+                $coursecontext = \core\context\course::instance($course->id);
+                $generatedurl = $output->get_generated_url_for_course($coursecontext, $course->id);
+                $courseimgs[$course->id] = $generatedurl ?: null;
+            }
+        }
+        
         $result = [];
         
         foreach ($courses as $course) {
@@ -94,6 +116,10 @@ class manager {
                 'id' => $course->id,
                 'fullname' => \format_string($course->fullname),
                 'shortname' => \format_string($course->shortname),
+                'shortname_raw' => $course->shortname,
+                'visible' => $course->visible,
+                'courseimage' => $courseimgs[$course->id],
+                'viewurl' => new \moodle_url('/course/view.php', ['id' => $course->id]),
                 'activitycount' => $activitycount,
                 'lastactivity' => $lastactivity,
                 'lastseen' => $lastseen,
@@ -281,12 +307,12 @@ class manager {
     public static function get_lastseen($userid, $courseid) {
         global $DB;
 
-        $record = $DB->get_record('user_lastaccess', [
+        $record = $DB->get_record('block_newcoursecontents_lastseen', [
             'userid' => $userid,
             'courseid' => $courseid
-        ], 'timeaccess');
+        ], 'lastseen');
 
-        return $record ? $record->timeaccess : null;
+        return $record ? $record->lastseen : null;
     }
 
     /**
@@ -321,12 +347,12 @@ class manager {
     protected static function count_unseen_activities($courseid, $userid) {
         global $DB;
 
-        $lastseenrecord = $DB->get_record('user_lastaccess', [
+        $lastseenrecord = $DB->get_record('block_newcoursecontents_lastseen', [
             'userid' => $userid,
             'courseid' => $courseid
-        ], 'timeaccess');
+        ], 'lastseen');
         
-        $lastseen = $lastseenrecord ? $lastseenrecord->timeaccess : null;
+        $lastseen = $lastseenrecord ? $lastseenrecord->lastseen : null;
         $seencms = self::get_seen_cms($userid);
 
         $params = [$courseid];

@@ -41,12 +41,103 @@ $PAGE->set_heading(\format_string($course->fullname));
 require_once(__DIR__ . '/classes/manager.php');
 require_once(__DIR__ . '/classes/output/renderer.php');
 
-$activities = \block_newcoursecontents\manager::get_course_details($courseid, $USER->id);
+$PAGE->requires->strings_for_js([
+    'gotodashboard',
+    'markallseen',
+    'markasseen',
+    'nochanges',
+    'gotocoursebutton',
+    'lastvisit',
+    'never',
+    'new',
+    'modified',
+    'added',
+    'open',
+    'gotocourse',
+    'close',
+    'viewdetails',
+], 'block_newcoursecontents');
 
-$cmids = array_column($activities, 'cmid');
-if (!empty($cmids)) {
-    \block_newcoursecontents\manager::mark_activities_seen($USER->id, $cmids);
+$PAGE->requires->js_amd_inline("
+    require(['jquery', 'core/ajax'], function($, Ajax) {
+        $(document).on('click', '.ncc-mark-single', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var button = $(this);
+            var activityItem = button.closest('.activity-item');
+            var cmid = button.data('cmid');
+            
+            console.log('Mark as seen clicked for cmid:', cmid);
+            
+            button.prop('disabled', true).html('<i class=\"fa-solid fa-spinner fa-spin me-1\"></i>...');
+            
+            var request = Ajax.call([{
+                methodname: 'block_newcoursecontents_mark_activity_seen',
+                args: {cmid: parseInt(cmid)},
+                done: function(response) {
+                    console.log('Success:', response);
+                    activityItem.fadeOut(300, function() {
+                        $(this).remove();
+                        
+                        var remaining = $('.activity-item');
+                        console.log('Remaining activities:', remaining.length);
+                        
+                        if (remaining.length === 0) {
+                            var emptyMsg = $('<div class=\"alert alert-success\">' +
+                                '<i class=\"fa-regular fa-check-circle me-2\"></i>' +
+                                M.util.get_string('nochanges', 'block_newcoursecontents') +
+                                '</div>');
+                            $('.activity-list').html(emptyMsg);
+                            $('.mark-all-form').hide();
+                        }
+                    });
+                },
+                fail: function(error) {
+                    console.error('Error:', error);
+                    button.prop('disabled', false).html('<i class=\"fa-regular fa-check me-1\"></i>' + 
+                        M.util.get_string('markasseen', 'block_newcoursecontents'));
+                }
+            }]);
+            
+            // Also handle the promise directly in case done/fail don't work
+            if (request && request[0]) {
+                request[0].done(function(response) {
+                    console.log('Promise done:', response);
+                    activityItem.fadeOut(300, function() {
+                        $(this).remove();
+                        
+                        var remaining = $('.activity-item');
+                        if (remaining.length === 0) {
+                            var emptyMsg = $('<div class=\"alert alert-success\">' +
+                                '<i class=\"fa-regular fa-check-circle me-2\"></i>' +
+                                M.util.get_string('nochanges', 'block_newcoursecontents') +
+                                '</div>');
+                            $('.activity-list').html(emptyMsg);
+                            $('.mark-all-form').hide();
+                        }
+                    });
+                }).fail(function(error) {
+                    console.error('Promise fail:', error);
+                    button.prop('disabled', false).html('<i class=\"fa-regular fa-check me-1\"></i>' + 
+                        M.util.get_string('markasseen', 'block_newcoursecontents'));
+                });
+            }
+        });
+    });
+");
+
+$markseen = optional_param('markseen', 0, PARAM_INT);
+if ($markseen && $courseid) {
+    \block_newcoursecontents\manager::update_lastseen($USER->id, $courseid);
+    $cmids = array_column(\block_newcoursecontents\manager::get_course_details($courseid, $USER->id), 'cmid');
+    if (!empty($cmids)) {
+        \block_newcoursecontents\manager::mark_activities_seen($USER->id, $cmids);
+    }
+    redirect(new \moodle_url('/blocks/newcoursecontents/detail.php', ['courseid' => $courseid]));
 }
+
+$activities = \block_newcoursecontents\manager::get_course_details($courseid, $USER->id);
 
 foreach ($activities as &$activity) {
     $activity['url'] = $activity['url']->out(false);
@@ -55,12 +146,22 @@ foreach ($activities as &$activity) {
 $lastseen = \block_newcoursecontents\manager::get_lastseen($USER->id, $courseid);
 
 $courseurl = new \moodle_url('/course/view.php', ['id' => $courseid]);
+$dashboardurl = new \moodle_url('/my/');
+
+$badgecolor = get_config('block_newcoursecontents', 'badgecolor');
+if (empty($badgecolor)) {
+    $badgecolor = '#0063A6';
+}
 
 $templatecontext = [
     'coursename' => \format_string($course->fullname),
     'courseurl' => $courseurl->out(false),
+    'dashboardurl' => $dashboardurl->out(false),
+    'courseid' => $courseid,
+    'badgecolor' => $badgecolor,
     'lastvisitstr' => $lastseen ? \block_newcoursecontents\manager::format_time($lastseen) : \get_string('never', 'moodle'),
     'activities' => $activities,
+    'hasactivities' => count($activities) > 0,
 ];
 
 $renderer = $PAGE->get_renderer('block_newcoursecontents');

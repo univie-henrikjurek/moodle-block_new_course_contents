@@ -47,4 +47,14 @@ class renderer extends \plugin_renderer_base {
     public function render_detail_page(array $context) {
         return $this->render_from_template('block_newcoursecontents/detail_page', $context);
     }
+
+    /**
+     * Render the modal content.
+     *
+     * @param array $context Template context
+     * @return string HTML
+     */
+    public function render_modal_content(array $context) {
+        return $this->render_from_template('block_newcoursecontents/modal_content', $context);
+    }
 }

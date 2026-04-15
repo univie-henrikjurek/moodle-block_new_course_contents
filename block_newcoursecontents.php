@@ -44,14 +44,25 @@ class block_newcoursecontents extends block_base {
         try {
             $courses = \block_newcoursecontents\manager::get_courses_with_activities($USER->id);
 
+            $badgecolor = get_config('block_newcoursecontents', 'badgecolor');
+            if (empty($badgecolor)) {
+                $badgecolor = '#0063A6';
+            }
+
             foreach ($courses as &$course) {
-                $course['courseurl'] = $course['courseurl']->out(false);
-                $course['detailurl'] = $course['detailurl']->out(false);
+                if (is_object($course['courseurl'])) {
+                    $course['courseurl'] = $course['courseurl']->out(false);
+                }
+                if (is_object($course['detailurl'])) {
+                    $course['detailurl'] = $course['detailurl']->out(false);
+                }
+                $course['viewurl'] = $course['courseurl'];
+                $course['badgecolor'] = $badgecolor;
                 
                 if ($course['lastactivity']) {
                     $course['lasttimestr'] = \block_newcoursecontents\manager::format_time($course['lastactivity']);
                 } else {
-                    $course['lasttimestr'] = '-';
+                    $course['lasttimestr'] = null;
                 }
                 
                 if ($course['lastseen']) {
@@ -70,8 +81,10 @@ class block_newcoursecontents extends block_base {
             $renderer = $PAGE->get_renderer('block_newcoursecontents');
             $this->content->text = $renderer->render_block($templatecontext);
         } catch (Exception $e) {
-            $this->content->text = '<div class="alert alert-danger">Error loading course activities.</div>';
+            $this->content->text = '<div class="alert alert-danger">Error loading course activities: ' . 
+                htmlspecialchars($e->getMessage()) . '</div>';
             error_log('block_newcoursecontents error: ' . $e->getMessage());
+            error_log('block_newcoursecontents trace: ' . $e->getTraceAsString());
         }
 
         return $this->content;
@@ -85,7 +98,7 @@ class block_newcoursecontents extends block_base {
     }
 
     public function has_config() {
-        return false;
+        return true;
     }
 
     public function instance_allow_multiple() {
